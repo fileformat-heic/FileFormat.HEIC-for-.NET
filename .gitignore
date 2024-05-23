@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+**/obj2/
+
+*.suo
+*.user
+*.sln.docstates
+
+.vs
+
+/Gui
