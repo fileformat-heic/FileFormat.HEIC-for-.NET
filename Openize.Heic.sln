@@ -1,0 +1,72 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34616.47
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Openize.Heic.Decoder", "Openize.Heic.Decoder\Openize.Heic.Decoder.csproj", "{4898D0C4-6699-4B59-A6A4-4198325C4D9C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Openize.IsoBmff", "Openize.IsoBmff\Openize.IsoBmff.csproj", "{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Openize.Heic.Tests", "Openize.Heic.Tests\Openize.Heic.Tests.csproj", "{7EE09896-3EA0-42FA-A42B-A86D44A5B838}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		DebugWithUnitTest|Any CPU = DebugWithUnitTest|Any CPU
+		LinuxDebugWithUnitTest|Any CPU = LinuxDebugWithUnitTest|Any CPU
+		Release|Any CPU = Release|Any CPU
+		ReleaseDebug|Any CPU = ReleaseDebug|Any CPU
+		ReleasePython|Any CPU = ReleasePython|Any CPU
+		ReleaseWithUnitTest|Any CPU = ReleaseWithUnitTest|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.DebugWithUnitTest|Any CPU.ActiveCfg = DebugWithUnitTest|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.DebugWithUnitTest|Any CPU.Build.0 = DebugWithUnitTest|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.LinuxDebugWithUnitTest|Any CPU.ActiveCfg = LinuxDebugWithUnitTest|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.LinuxDebugWithUnitTest|Any CPU.Build.0 = LinuxDebugWithUnitTest|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.ReleaseDebug|Any CPU.ActiveCfg = ReleaseDebug|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.ReleaseDebug|Any CPU.Build.0 = ReleaseDebug|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.ReleasePython|Any CPU.ActiveCfg = ReleasePython|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.ReleasePython|Any CPU.Build.0 = ReleasePython|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.ReleaseWithUnitTest|Any CPU.ActiveCfg = ReleaseWithUnitTest|Any CPU
+		{4898D0C4-6699-4B59-A6A4-4198325C4D9C}.ReleaseWithUnitTest|Any CPU.Build.0 = ReleaseWithUnitTest|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.DebugWithUnitTest|Any CPU.ActiveCfg = DebugWithUnitTest|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.DebugWithUnitTest|Any CPU.Build.0 = DebugWithUnitTest|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.LinuxDebugWithUnitTest|Any CPU.ActiveCfg = LinuxDebugWithUnitTest|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.LinuxDebugWithUnitTest|Any CPU.Build.0 = LinuxDebugWithUnitTest|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.ReleaseDebug|Any CPU.ActiveCfg = ReleaseDebug|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.ReleaseDebug|Any CPU.Build.0 = ReleaseDebug|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.ReleasePython|Any CPU.ActiveCfg = ReleasePython|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.ReleasePython|Any CPU.Build.0 = ReleasePython|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.ReleaseWithUnitTest|Any CPU.ActiveCfg = ReleaseWithUnitTest|Any CPU
+		{B8FB15A5-F164-40D2-A447-ACCE19BA6B19}.ReleaseWithUnitTest|Any CPU.Build.0 = ReleaseWithUnitTest|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.DebugWithUnitTest|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.DebugWithUnitTest|Any CPU.Build.0 = Debug|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.LinuxDebugWithUnitTest|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.LinuxDebugWithUnitTest|Any CPU.Build.0 = Debug|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.ReleaseDebug|Any CPU.ActiveCfg = Release|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.ReleaseDebug|Any CPU.Build.0 = Release|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.ReleasePython|Any CPU.ActiveCfg = Release|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.ReleasePython|Any CPU.Build.0 = Release|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.ReleaseWithUnitTest|Any CPU.ActiveCfg = Release|Any CPU
+		{7EE09896-3EA0-42FA-A42B-A86D44A5B838}.ReleaseWithUnitTest|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3617F52F-41F4-4E9D-AF0D-66B705535ED4}
+	EndGlobalSection
+EndGlobal

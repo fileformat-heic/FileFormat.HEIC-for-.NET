@@ -1,0 +1,483 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Openize.Heic.Decoder</name>
+    </assembly>
+    <members>
+        <member name="T:Openize.Heic.Decoder.HeicFrameReferenceType">
+            <summary>
+            Type of reference layers that are reverce-linked.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.HeicFrameReferenceType.Alpha">
+            <summary>
+            Transparency layer.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.HeicFrameReferenceType.DepthMap">
+            <summary>
+            Depth map layer.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.HeicFrameReferenceType.Hdr">
+            <summary>
+            High dynamic range layer.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.HeicFrameReferenceType.Undefined">
+            <summary>
+            Undefined layer.
+            </summary>
+        </member>
+        <member name="T:Openize.Heic.Decoder.HeicImageFrame">
+            <summary>
+            Heic image frame class.
+            Contains hevc coded data or meta data.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.HeicImageFrame.hvcConfig">
+            <summary>
+            Hevc decoder configuration information from Isobmff container. 
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.HeicImageFrame.rawPixels">
+            <summary>
+            Raw YUV pixel data.
+            Multidimantional array: chroma or luma index, then two-dimentional array with x and y navigation.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.ImageType">
+            <summary>
+            Type of an image frame content.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.Width">
+            <summary>
+            Width of the image frame in pixels.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.Height">
+            <summary>
+            Height of the image frame in pixels.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.HasAlpha">
+            <summary>
+            Indicates the presence of transparency of transparency layer.
+            </summary>
+            <returns>True if frame is linked with alpha data frame, false otherwise.</returns>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.IsDerived">
+            <summary>
+            Indicates the fact that frame contains only transform data and is inherited from another frame.
+            </summary>
+            <returns>True if frame is derived, false otherwise.</returns>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.DerivativeType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.NumberOfChannels">
+            <summary>
+            Number of channels with color data.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.BitsPerChannel">
+            <summary>
+            Bits per channel with color data.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.alphaReference">
+            <summary>
+            Identificator of the layer with alpha data.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.imageRotationAngle">
+            <summary>
+            Image rotation angle data in anti-clockwise direction in units of 90 degrees.
+            <para>To get the degree units this value has to be multiplied by 90.</para>
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.imageMirrorAxis">
+            <summary>
+            Specifies a vertical (axis = 1) or horizontal (axis = 2) axis for the mirroring operation.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicImageFrame.#ctor(Openize.Heic.Decoder.IO.BitStreamWithNalSupport,Openize.Heic.Decoder.HeicImage,System.UInt32,System.Collections.Generic.List{Openize.IsoBmff.Box})">
+            <summary>
+            Create Heic image frame object.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="parent">Parent image.</param>
+            <param name="id">Frame identificator.</param>
+            <param name="properties">Frame properties described in container.</param>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicImageFrame.GetByteArray(Openize.Heic.Decoder.PixelFormat,System.Drawing.Rectangle)">
+            <summary>
+            Get pixel data in the format of byte array.
+            <para>Each three or four bytes (the count depends on the pixel format) refer to one pixel left to right top to bottom line by line.</para>
+            </summary>
+            <param name="pixelFormat">Pixel format that defines the order of colors and the presence of alpha byte.</param>
+            <param name="boundsRectangle">Bounds of the requested area.</param>
+            <returns>Byte array</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicImageFrame.GetInt32Array(Openize.Heic.Decoder.PixelFormat,System.Drawing.Rectangle)">
+            <summary>
+            Get pixel data in the format of integer array. 
+            <para>Each int value refers to one pixel left to right top to bottom line by line.</para>
+            </summary>
+            <param name="pixelFormat">Pixel format that defines the order of colors.</param>
+            <param name="boundsRectangle">Bounds of the requested area.</param>
+            <returns>Integer array</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicImageFrame.AddLayerReference(System.UInt32,Openize.Heic.Decoder.HeicFrameReferenceType)">
+            <summary>
+            Add layer reference to the frame.
+            Used to link reference layers that are reverce-linked (alpha layer, depth map, hdr).
+            </summary>
+            <param name="id">Layer identificator.</param>
+            <param name="type">Layer type.</param>
+        </member>
+        <member name="T:Openize.Heic.Decoder.ImageFrameType">
+            <summary>
+            Type of an image frame.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.ImageFrameType.hvc1">
+            <summary>
+            HEVC coded image frame.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.ImageFrameType.iden">
+            <summary>
+            Identity transformation.
+            Cropping and/or rotation by 90, 180, or 270 degrees, imposed through the respective transformative properties.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.ImageFrameType.iovl">
+            <summary>
+            Image Overlay.
+            Overlaying any number of input images in indicated order and locations onto the canvas of the output image.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.ImageFrameType.grid">
+            <summary>
+            Image Grid.
+            Reconstructing a grid of input images of the same width and height.
+            </summary>
+        </member>
+        <member name="T:Openize.Heic.Decoder.IO.BitStreamWithNalSupport">
+            <summary>
+            The BitStreamWithNalSupport class is designed to read bits from a specified stream.
+            It allows to ignore specified byte sequences while reading.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.Cabac">
+            <summary>
+            Context-adaptive arithmetic entropy-decoder. 
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.#ctor(System.IO.Stream,System.Int32)">
+            <summary>
+            Creates a class object with a stream object and an optional buffer size as parameters.
+            </summary>
+            <param name="stream">The source stream.</param>
+            <param name="bufferSize">The buffer size.</param>
+        </member>
+        <member name="P:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.Context">
+            <summary>
+            Returns the current image context.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.CurrentImageId">
+            <summary>
+            Current image identificator.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.ContextDictionary">
+            <summary>
+            Dictionary of images context information.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.CreateNewImageContext(System.UInt32)">
+            <summary>
+            Creates an image context object.
+            </summary>
+            <param name="imageId">Image identificator.</param>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.DeleteImageContext(System.UInt32)">
+            <summary>
+            Deletes the image context object by id.
+            </summary>
+            <param name="imageId">Image identificator.</param>
+        </member>
+        <member name="F:Openize.Heic.Decoder.IO.BitStreamWithNalSupport._nalMode">
+            <summary>
+            Nal Unit reader mode.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.IO.BitStreamWithNalSupport._prevReadByte">
+            <summary>
+            Previous read byte.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.IO.BitStreamWithNalSupport._prevPrevReadByte">
+            <summary>
+            The byte read before previous.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.TurnOnNalUnitMode">
+            <summary>
+            Turns on Nal Unit reader mode which ignores specified by standart byte sequences.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.TurnOffNulUnitMode">
+            <summary>
+            Turns off Nal Unit reader mode.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.Read(System.Int32)">
+            <summary>
+            Reads the specified number of bits from the stream.
+            </summary>
+            <param name="bitCount">The required number of bits to read.</param>
+            <returns>The integer value.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.ReadString">
+            <summary>
+            Reads bytes as ASCII characters until '\0'.
+            </summary>
+            <returns>String value.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.ReadFlag">
+            <summary>
+            Reads one bit and returns true if it is 1, otherwise false.
+            </summary>
+            <returns>Boolean value.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.SkipBits(System.Int32)">
+            <summary>
+            Skip the specified number of bits in the stream.
+            </summary>
+            <param name="bitsNumber">Number of bits to skip.</param>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.ReadUev">
+            <summary>
+            Read an unsigned integer 0-th order Exp-Golomb-coded syntax element with the left bit first.
+            </summary>
+            <returns>An unsigned integer.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.ReadSev">
+            <summary>
+            Read a signed integer 0-th order Exp-Golomb-coded syntax element with the left bit first.
+            </summary>
+            <returns>A signed integer.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.ReadAev(Openize.Heic.Decoder.CabacType)">
+            <summary>
+            Placeholder for not implemented CABAC syntax elements. Always throws an exception.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.ReadAevFlag(Openize.Heic.Decoder.CabacType)">
+            <summary>
+            Placeholder for not implemented CABAC syntax flag elements. Always throws an exception.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.IO.BitStreamWithNalSupport.HasMoreRbspData(System.UInt64)">
+            <summary>
+            Checks if there is more data in the RBSP.
+            </summary>
+            <param name="endPosition">End position of current RBSP.</param>
+            <returns>True if there is more data in the RBSP, false otherwise</returns>
+        </member>
+        <member name="T:Openize.Heic.Decoder.HeicHeader">
+            <summary>
+            Heic image header class. Grants convinient access to IsoBmff container meta data.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicHeader.Meta">
+            <summary>
+            Meta data IsoBmff box.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicHeader.DefaultImageId">
+            <summary>
+            The identificator of the default image.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicHeader.#ctor(Openize.IsoBmff.MetaBox)">
+            <summary>
+            Initializes a new instance of the heic image header.
+            </summary>
+            <param name="meta"><see cref="T:Openize.IsoBmff.MetaBox"/> data.</param>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicHeader.GetProperties">
+            <summary>
+            Returns properties grouped by frames.
+            </summary>
+            <returns>Dictionary filled with lists of properties that can be accessed by frame id.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicHeader.GetInfoBoxById(System.UInt32)">
+            <summary>
+            Returns frame type and name.
+            </summary>
+            <param name="id">Identificator of the frame.</param>
+            <returns><see cref="T:Openize.IsoBmff.ItemInfoEntry"/> that contains type information.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicHeader.GetLocationBoxById(System.UInt32)">
+            <summary>
+            Returns frame location.
+            </summary>
+            <param name="id">Identificator of the frame.</param>
+            <returns><see cref="T:Openize.IsoBmff.IlocItem"/> that contains location information.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicHeader.GetItemDataBoxContent(System.UInt32,System.UInt32)">
+            <summary>
+            Returns content from idat (item data) box by offset and length.
+            </summary>
+            <param name="offset">The offset from the start on the idat box.</param>
+            <param name="length">The length of the data.</param>
+            <returns>Byte array.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicHeader.GetDerivedList(System.UInt32)">
+            <summary>
+            Returns the list of the frames that are used in calculation of the current frame if exists.
+            </summary>
+            <param name="id">Identificator of the parent frame.</param>
+            <returns>Unsigned integer array.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicHeader.GetDerivedType(System.UInt32)">
+            <summary>
+            Returns the derivative type of the frame if exists.
+            </summary>
+            <param name="id">Identificator of the frame.</param>
+            <returns>BoxType enum value.</returns>
+        </member>
+        <member name="T:Openize.Heic.Decoder.HeicImage">
+            <summary>
+            Heic image class.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.HeicImage._stream">
+            <summary>
+            Image stream with NAL unit specification reader.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.HeicImage._frames">
+            <summary>
+            Dictionary of Heic image frames.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicImage.#ctor(Openize.Heic.Decoder.HeicHeader,Openize.Heic.Decoder.IO.BitStreamWithNalSupport)">
+            <summary>
+            Create heic image object.
+            </summary>
+            <param name="header">File header.</param>
+            <param name="stream">File stream.</param>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImage.Header">
+            <summary>
+            Heic image header. Grants convinient access to IsoBmff container meta data.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImage.Frames">
+            <summary>
+            Dictionary of Heic image frames with access by identifier.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImage.DefaultImage">
+            <summary>
+            Returns the default image frame, which is specified in meta data.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImage.Width">
+            <summary>
+            Width of the default image frame in pixels.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImage.Height">
+            <summary>
+            Height of the default image frame in pixels.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicImage.Load(System.IO.Stream)">
+            <summary>
+            Reads the file meta data and creates a class object for further decoding of the file contents.
+            <para>This operation does not decode pixels.
+            Use the default frame methods GetByteArray or GetInt32Array afterwards in order to decode pixels.</para>
+            </summary>
+            <param name="stream">File stream.</param>
+            <returns>Returns a heic image object with meta data read.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicImage.CanLoad(System.IO.Stream)">
+            <summary>
+            Checks if the stream can be read as a heic image.
+            </summary>
+            <param name="stream">File stream.</param>
+            <returns>True if file header contains heic signarure, false otherwise.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicImage.ReadFramesMeta(Openize.Heic.Decoder.IO.BitStreamWithNalSupport)">
+            <summary>
+            Fill frames dictionary with read meta data.
+            </summary>
+            <param name="stream">File stream.</param>
+        </member>
+        <member name="P:Openize.Heic.Decoder.seq_parameter_set_rbsp.ChromaArrayType">
+            <summary>
+            0 - mono, 1 - 420, 2 - 422, 3 - 444
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.seq_parameter_set_rbsp.SubWidthC">
+            <summary>
+            2 if 420 or 422, otherwise 1
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.seq_parameter_set_rbsp.SubHeightC">
+            <summary>
+            2 if 420, otherwise 1
+            </summary>
+        </member>
+        <member name="T:Openize.Heic.Decoder.MathExtra">
+            <summary>
+            Class used to create extended math functions.
+            </summary>
+        </member>
+        <member name="T:Openize.Heic.Decoder.YuvConverter">
+            <summary>
+            Class used to convert colors from YUV colorspace to RGB.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.YuvConverter.fullRangeFlag">
+            <summary>
+            Full or TV range flag.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.YuvConverter.picture">
+            <summary>
+            Coded image.
+            </summary>
+        </member>
+        <member name="M:Openize.Heic.Decoder.YuvConverter.GetRgbaByteArray">
+            <summary>
+            Convert YUV byte array to RGBA.
+            </summary>
+            <returns>RGBA byte array.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.YuvConverter.YCrCb2RGB(System.Double,System.Double,System.Double)">
+            <summary>
+            Calculate RGB values from YCrCb based on curred converter settings.
+            </summary>
+            <param name="Y">Luma value.</param>
+            <param name="Cb">Chroma blue value.</param>
+            <param name="Cr">Chroma red value.</param>
+            <returns>Red, Green and Blue values.</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.YuvConverter.DefineCoefficients(Openize.Heic.Decoder.vui_parameters)">
+            <summary>
+            Define converter coefficients based on parameters of image meta data.
+            </summary>
+            <param name="vui_parameters">Image usability information data.</param>
+        </member>
+    </members>
+</doc>
