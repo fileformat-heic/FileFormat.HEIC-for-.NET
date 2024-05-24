@@ -1,6 +1,6 @@
 # Openize.Heic
 
-Openize.Heic is an open source implementation of the ISO/IEC 23008-12:2017 HEIF file format decoder.
+Openize.Heic is an open source SDK implementing the ISO/IEC 23008-12:2017 HEIF file format decoder.
 
 It is written from scratch and has a plain C# API to enable a simple integration into other software.
 
@@ -24,7 +24,7 @@ Openize.Heic doesn't support:
 * deblocking filter.
 
 ## Usage examples
-Read .heic file to int array with Argb32 data
+### Read .heic file to int array with Argb32 data
 ```C#
 using (var fs = new FileStream("filename.heic", FileMode.Open))
 {
@@ -33,7 +33,7 @@ using (var fs = new FileStream("filename.heic", FileMode.Open))
 }
 ```
 
-Read .heic file to System.Windows.Media.Imaging.WriteableBitmap
+### Convert .heic file to .png
 ```C#
 using (var fs = new FileStream("filename.heic", FileMode.Open))
 {
@@ -46,6 +46,36 @@ using (var fs = new FileStream("filename.heic", FileMode.Open))
     var wbitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Bgra32, null);
     var rect = new Int32Rect(0, 0, width, height);
     wbitmap.WritePixels(rect, pixels, 4 * width, 0);
+    
+    using (FileStream saveStream = new FileStream("output.png", FileMode.OpenOrCreate))
+    {
+        PngBitmapEncoder encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(wbitmap));
+        encoder.Save(saveStream);
+    }
+}
+```
+
+### Convert .heic file to .jpg
+```C#
+using (var fs = new FileStream("filename.heic", FileMode.Open))
+{
+    HeicImage image = HeicImage.Load(fs);
+     
+    var pixels = image.GetByteArray(Heic.Decoder.PixelFormat.Bgra32);
+    var width = (int)image.Width;
+    var height = (int)image.Height;
+     
+    var wbitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Bgra32, null);
+    var rect = new Int32Rect(0, 0, width, height);
+    wbitmap.WritePixels(rect, pixels, 4 * width, 0);
+    
+    using (FileStream saveStream = new FileStream("output.jpg", FileMode.OpenOrCreate))
+    {
+        JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(wbitmap));
+        encoder.Save(saveStream);
+    }
 }
 ```
 
