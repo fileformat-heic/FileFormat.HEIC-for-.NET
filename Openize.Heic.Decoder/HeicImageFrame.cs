@@ -327,21 +327,39 @@ namespace Openize.Heic.Decoder
             {
                 for (uint newCol = 0; newCol < Width; newCol++)
                 {
-                    oldCol = imageRotationAngle switch
+                    switch (imageRotationAngle)
                     {
-                        3 => newRow,
-                        2 => Height - newCol - 1,
-                        1 => Height - newRow - 1,
-                        0 => newCol
-                    };
+                        case 3:
+                            oldCol = newRow;
+                            break;
+                        case 2:
+                            oldCol = Height - newCol - 1;
+                            break;
+                        case 1:
+                            oldCol = Height - newRow - 1;
+                            break;
+                        case 0:
+                        default:
+                            oldCol = newCol;
+                            break;
+                    }
 
-                    oldRow = imageRotationAngle switch
+                    switch (imageRotationAngle)
                     {
-                        3 => Width - newCol - 1,
-                        2 => Width - newRow - 1,
-                        1 => newCol,
-                        0 => newRow
-                    };
+                        case 3:
+                            oldRow = Width - newCol - 1;
+                            break;
+                        case 2:
+                            oldRow = Width - newRow - 1;
+                            break;
+                        case 1:
+                            oldRow = newCol;
+                            break;
+                        case 0:
+                        default:
+                            oldRow = newRow;
+                            break;
+                    }
 
                     if (imageMirrorAxis == 1) // vertical
                         oldRow = Height - oldRow;

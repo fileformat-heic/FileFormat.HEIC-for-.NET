@@ -92,7 +92,7 @@ namespace Openize.Heic.Decoder
                     dependent_slice_segment_flag = stream.ReadFlag();
 
                 slice_segment_address = (uint)stream.Read(
-                    (int)Math.Ceiling(Math.Log2(sps.PicSizeInCtbsY)));
+                    (int)Math.Ceiling(Math.Log(sps.PicSizeInCtbsY, 2)));
 
                 CtbAddrInRs = slice_segment_address;
                 CtbAddrInTs = pps.CtbAddrRsToTs[CtbAddrInRs];
@@ -133,7 +133,7 @@ namespace Openize.Heic.Decoder
                     }
                     else if (sps.num_short_term_ref_pic_sets > 1)
                         short_term_ref_pic_set_idx = stream.Read((int)
-                            Math.Ceiling(Math.Log2(sps.num_short_term_ref_pic_sets)));
+                            Math.Ceiling(Math.Log(sps.num_short_term_ref_pic_sets, 2)));
 
                     if (sps.long_term_ref_pics_present_flag)
                     {
@@ -289,13 +289,22 @@ namespace Openize.Heic.Decoder
 
         public int MaxNumMergeCand => 5 - five_minus_max_num_merge_cand;
 
-        public int initType => slice_type switch
+        public int initType
         {
-            SliceType.P => (cabac_init_flag ? 1 : 0) + 1,
-            SliceType.B => 2 - (cabac_init_flag ? 1 : 0),
-            SliceType.I => 0,
-            _ => 0,
-        };
+            get
+            {
+                switch (slice_type)
+                {
+                    case SliceType.P:
+                        return (cabac_init_flag ? 1 : 0) + 1;
+                    case SliceType.B:
+                        return 2 - (cabac_init_flag ? 1 : 0);
+                    case SliceType.I:
+                    default:
+                        return 0;
+                }
+            }
+        }
 
         public int SliceQPY => 26 + pps.init_qp_minus26 + slice_qp_delta;
 

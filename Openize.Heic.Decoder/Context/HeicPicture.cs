@@ -399,13 +399,24 @@ namespace Openize.Heic.Decoder
             if (intraChromaPredMode == 4)
                 return intraLumaPredMode;
 
-            IntraPredMode candidate = intraChromaPredMode switch
+            IntraPredMode candidate;
+
+            switch (intraChromaPredMode)
             {
-                0 => IntraPredMode.INTRA_PLANAR,
-                1 => IntraPredMode.INTRA_ANGULAR26,
-                2 => IntraPredMode.INTRA_ANGULAR10,
-                3 => IntraPredMode.INTRA_DC
-            };
+                case 0:
+                    candidate = IntraPredMode.INTRA_PLANAR;
+                    break;
+                case 1:
+                    candidate = IntraPredMode.INTRA_ANGULAR26;
+                    break;
+                case 2:
+                    candidate = IntraPredMode.INTRA_ANGULAR10;
+                    break;
+                case 3:
+                default:
+                    candidate = IntraPredMode.INTRA_DC;
+                    break;
+            }
 
             if (intraLumaPredMode == candidate)
                 return IntraPredMode.INTRA_ANGULAR34;

@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	<UseTargetFramework Condition=" '$(UseTargetFramework)' == '' ">net8.0</UseTargetFramework>
-    <TargetFramework>$(UseTargetFramework)</TargetFramework>
-    <TargetFramework Condition="$(UseTargetFramework) == 'netcoreapp3.1'">netstandard2.0</TargetFramework>
+	  <UseTargetFramework Condition=" '$(UseTargetFramework)' == '' ">net8.0</UseTargetFramework>
+	  <TargetFrameworks>net8.0;net6.0;netstandard2.0</TargetFrameworks>
     <Configurations>Debug;Release;DebugWithUnitTest;ReleaseWithUnitTest;LinuxDebugWithUnitTest;ReleaseDebug;ReleasePython</Configurations>
   </PropertyGroup>
   <PropertyGroup>
@@ -83,6 +82,7 @@
     <Compile Include="IO\CabacType.cs" />
     <Compile Include="IO\ContextVariable.cs" />
     <Compile Include="PixelFormat.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="rsbp\NalHeader.cs" />
     <Compile Include="rsbp\rbsp_trailing_bits.cs" />
 
