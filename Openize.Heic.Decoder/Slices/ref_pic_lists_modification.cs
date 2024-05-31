@@ -35,7 +35,7 @@ namespace Openize.Heic.Decoder
             if (ref_pic_list_modification_flag_l0)
                 for (int i = 0; i <= num_ref_idx_l1_active_minus1; i++)
                     list_entry_l0[i] = stream.Read((int)                   // u(v)
-                        Math.Ceiling(Math.Log2(NumPicTotalCurr)));
+                        Math.Ceiling(Math.Log(NumPicTotalCurr, 2)));
 
             if (slice_type == SliceType.B)
             {
@@ -45,7 +45,7 @@ namespace Openize.Heic.Decoder
                 if (ref_pic_list_modification_flag_l1)
                     for (int i = 0; i <= num_ref_idx_l1_active_minus1; i++)
                         list_entry_l1[i] = stream.Read((int)               // u(v)
-                            Math.Ceiling(Math.Log2(NumPicTotalCurr)));
+                            Math.Ceiling(Math.Log(NumPicTotalCurr, 2)));
             }
         }
 

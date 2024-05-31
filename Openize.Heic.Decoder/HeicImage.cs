@@ -44,7 +44,7 @@ namespace Openize.Heic.Decoder
             this.Header = header;
             this._stream = stream;
 
-            _frames = new();
+            _frames = new Dictionary<uint, HeicImageFrame>();
 
             ReadFramesMeta(stream);
         }

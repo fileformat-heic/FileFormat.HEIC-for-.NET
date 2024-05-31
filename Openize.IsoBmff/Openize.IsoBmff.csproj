@@ -1,9 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <UseTargetFramework Condition=" '$(UseTargetFramework)' == '' ">net8.0</UseTargetFramework>
-    <TargetFramework>$(UseTargetFramework)</TargetFramework>
-    <TargetFramework Condition="$(UseTargetFramework) == 'netcoreapp3.1'">netstandard2.0</TargetFramework>
+	  <TargetFrameworks>net8.0;net6.0;netstandard2.0</TargetFrameworks>
     <Configurations>Debug;Release;DebugWithUnitTest;ReleaseWithUnitTest;LinuxDebugWithUnitTest;ReleaseDebug;ReleasePython</Configurations>
   </PropertyGroup>
   <PropertyGroup>
@@ -99,6 +98,8 @@
     <Compile Include="Boxes\UserDescriptionBox.cs" />
 
     <Compile Include="IO\BitStreamReader.cs" />
+
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -235,12 +235,15 @@ namespace Openize.Heic.Decoder
                 samples = FilteringOfNeighbouringSamples(stream, picture, samples, nTbS, cIdx, intraPredMode);
             }
 
-            return intraPredMode switch
+            switch (intraPredMode)
             {
-                IntraPredMode.INTRA_PLANAR => DecodeIntraPredictionPlanar(picture, nTbS, samples),
-                IntraPredMode.INTRA_DC => DecodeIntraPredictionDc(picture, nTbS, cIdx, samples),
-                _ => DecodeIntraPredictionAngular(stream, picture, nTbS, cIdx, intraPredMode, samples)
-            };
+                case IntraPredMode.INTRA_PLANAR:
+                    return DecodeIntraPredictionPlanar(picture, nTbS, samples);
+                case IntraPredMode.INTRA_DC:
+                    return DecodeIntraPredictionDc(picture, nTbS, cIdx, samples);
+                default:
+                    return DecodeIntraPredictionAngular(stream, picture, nTbS, cIdx, intraPredMode, samples);
+            }
         }
 
         // 8.4.4.2.3 Filtering process of neighbouring samples
@@ -261,13 +264,21 @@ namespace Openize.Heic.Decoder
             {
                 int minDistVerHor = Math.Min(Math.Abs((int)intraPredMode - 26), Math.Abs((int)intraPredMode - 10));
 
-                filterFlag = nTbS switch
+                switch (nTbS)
                 {
-                    8 => minDistVerHor > 7,
-                    16 => minDistVerHor > 1,
-                    32 => minDistVerHor > 0,
-                    _ => false
-                };
+                    case 8:
+                        filterFlag = minDistVerHor > 7;
+                        break;
+                    case 16:
+                        filterFlag = minDistVerHor > 1;
+                        break;
+                    case 32:
+                        filterFlag = minDistVerHor > 0;
+                        break;
+                    default:
+                        filterFlag = false;
+                        break;
+                }
             }
 
             if (filterFlag)
@@ -326,7 +337,7 @@ namespace Openize.Heic.Decoder
                 for (int y = 0; y < nTbS; y++)
                     predSamples[x, y] =
                         ((nTbS - 1 - x) * p[-1, y] + (x + 1) * p[nTbS, -1] +
-                         (nTbS - 1 - y) * p[x, -1] + (y + 1) * p[-1, nTbS] + nTbS) >> ((int)Math.Log2(nTbS) + 1);
+                         (nTbS - 1 - y) * p[x, -1] + (y + 1) * p[-1, nTbS] + nTbS) >> ((int)Math.Log(nTbS, 2) + 1);
             
             return predSamples;
         }
@@ -346,7 +357,7 @@ namespace Openize.Heic.Decoder
                 dcVal += p[i, -1];
                 dcVal += p[-1, i];
             }
-            dcVal >>= ((int)Math.Log2(nTbS) + 1);
+            dcVal >>= ((int)Math.Log(nTbS, 2) + 1);
 
             int[,] predSamples = new int[nTbS, nTbS];
 
@@ -511,7 +522,7 @@ namespace Openize.Heic.Decoder
 
             int bitDepth = (cIdx == 0) ? picture.sps.BitDepthY : picture.sps.BitDepthC;
             int bdShift = Math.Max(20 - bitDepth, picture.sps.sps_range_ext.extended_precision_processing_flag ? 11 : 0);
-            int tsShift = 5 + (int)Math.Log2(nTbS);
+            int tsShift = 5 + (int)Math.Log(nTbS, 2);
 
             bool rotateCoeffs = (picture.sps.sps_range_ext.transform_skip_rotation_enabled_flag &&
                                  nTbS == 4 &&
@@ -536,13 +547,23 @@ namespace Openize.Heic.Decoder
             }
             else
             {
-                int qP = cIdx switch
+                int qP;
+                
+                switch (cIdx)
                 {
-                    0 => MathExtra.Clip3(0, 51 + picture.sps.QpBdOffsetY, stream.Context.QpY +
-                        (picture.tu_residual_act_flag[xTbY, yTbY] ? picture.pps.PpsActQpOffsetY + slice_header.slice_act_y_qp_offset : 0)),
-                    1 => stream.Context.QpCb,
-                    2 => stream.Context.QpCr
-                };
+                    case 1:
+                        qP = stream.Context.QpCb;
+                        break;
+                    case 2:
+                        qP = stream.Context.QpCr;
+                        break;
+                    case 0:
+                    default:
+                        qP = MathExtra.Clip3(0, 51 + picture.sps.QpBdOffsetY, stream.Context.QpY +
+                        (picture.tu_residual_act_flag[xTbY, yTbY] ? picture.pps.PpsActQpOffsetY + slice_header.slice_act_y_qp_offset : 0));
+                        break;
+
+                }
 
                 int[,] d = GetScalingProcessForTransformCoefficients(stream, picture, xTbY, yTbY, cuPredMode, cIdx, nTbS, qP);
 
@@ -583,11 +604,11 @@ namespace Openize.Heic.Decoder
                 (picture.sps.sps_range_ext.extended_precision_processing_flag ? Math.Max(15, picture.sps.BitDepthC + 6) : 15);
 
             int bdShift = (cIdx == 0 ? picture.sps.BitDepthY : picture.sps.BitDepthC) + 
-                (int)Math.Log2(nTbS) + 10 - log2TransformRange;
+                (int)Math.Log(nTbS, 2) + 10 - log2TransformRange;
             int coeffMin = cIdx == 0 ? picture.sps.CoeffMinY : picture.sps.CoeffMinC;
             int coeffMax = cIdx == 0 ? picture.sps.CoeffMaxY : picture.sps.CoeffMaxC;
 
-            int sizeId = (int)Math.Log2(nTbS) - 2;
+            int sizeId = (int)Math.Log(nTbS, 2) - 2;
             int matrixId = cIdx + (cuPredMode == PredMode.MODE_INTRA ? 0 : 3);
 
             int[,] m = new int[nTbS, nTbS];
@@ -637,7 +658,7 @@ namespace Openize.Heic.Decoder
             int coeffMax = cIdx == 0 ? picture.sps.CoeffMaxY : picture.sps.CoeffMaxC;
 
             int trType = (cuPredMode == PredMode.MODE_INTRA && nTbS == 4 && cIdx == 0) ? 1 : 0;
-            int mult = 1 << (5 - (int)Math.Log2(nTbS));
+            int mult = 1 << (5 - (int)Math.Log(nTbS, 2));
 
             int[,] e = new int[nTbS, nTbS];
             int[,] g = new int[nTbS, nTbS];
@@ -684,7 +705,7 @@ namespace Openize.Heic.Decoder
             // Output of this process is the list of transformed samples y with elements y[ i ], with i = 0..nTbS − 1.
 
             int[] y = new int[nTbS];
-            int mult = 1 << (5 - (int)Math.Log2(nTbS));
+            int mult = 1 << (5 - (int)Math.Log(nTbS, 2));
 
             if (trType == 1)
                 for (int i = 0; i < nTbS; i++)

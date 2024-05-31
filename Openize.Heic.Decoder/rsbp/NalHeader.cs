@@ -57,17 +57,23 @@ namespace Openize.Heic.Decoder
             (((type <= NalUnitType.RSV_VCL_R15) && ((int)type % 2 != 0)) ||
              ((type >= NalUnitType.BLA_W_LP) && (type <= NalUnitType.RSV_IRAP_VCL23)));
 
-        internal bool IsSublayerNonReference => type switch
-            {
-                NalUnitType.TRAIL_N => true,
-                NalUnitType.TSA_N => true,
-                NalUnitType.STSA_N => true,
-                NalUnitType.RADL_N => true,
-                NalUnitType.RASL_N => true,
-                NalUnitType.RSV_VCL_N10 => true,
-                NalUnitType.RSV_VCL_N12 => true,
-                NalUnitType.RSV_VCL_N14 => true,
-                _ => false
-            };
+        internal bool IsSublayerNonReference {
+            get {
+                switch (type)
+                {
+                    case NalUnitType.TRAIL_N:
+                    case NalUnitType.TSA_N:
+                    case NalUnitType.STSA_N:
+                    case NalUnitType.RADL_N:
+                    case NalUnitType.RASL_N:
+                    case NalUnitType.RSV_VCL_N10:
+                    case NalUnitType.RSV_VCL_N12:
+                    case NalUnitType.RSV_VCL_N14:
+                        return true;
+                    default:
+                        return false;
+                };
+            }
+        }
     }
 }

@@ -110,7 +110,7 @@ namespace Openize.Heic.Decoder
 
             int remainingNumIndices = num_palette_indices;
             int PaletteScanPos = 0;
-            int log2BlockSize = (int)Math.Log2(nCbS);
+            int log2BlockSize = (int)Math.Log(nCbS, 2);
 
             while(PaletteScanPos < nCbS * nCbS ) {
                 int xC = x0 + Scans.ScanOrder[log2BlockSize][3][PaletteScanPos][0];
