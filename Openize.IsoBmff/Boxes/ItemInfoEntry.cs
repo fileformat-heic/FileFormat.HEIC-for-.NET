@@ -60,6 +60,11 @@ namespace Openize.IsoBmff
         public string content_encoding;
 
         /// <summary>
+        /// A bool value, that shows if item is hidden.
+        /// </summary>
+        public bool item_hidden;
+
+        /// <summary>
         /// Text summary of the box.
         /// </summary>
         public new string ToString => $"{type} id: {item_ID} type: {UintToString(item_type)} name: {item_name}{content_type}";
@@ -70,6 +75,8 @@ namespace Openize.IsoBmff
         /// <param name="stream">File stream.</param>
         internal ItemInfoEntry(BitStreamReader stream) : base(stream, BoxType.infe)
         {
+            item_hidden = flags[23];
+
             if (version < 2)
             {
                 item_ID = (uint)stream.Read(16);

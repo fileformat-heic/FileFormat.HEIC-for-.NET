@@ -976,6 +976,11 @@
             The values are as defined for Content‐Encoding for HTTP/1.1.
             </summary>
         </member>
+        <member name="F:Openize.IsoBmff.ItemInfoEntry.item_hidden">
+            <summary>
+            A bool value, that shows if item is hidden.
+            </summary>
+        </member>
         <member name="P:Openize.IsoBmff.ItemInfoEntry.ToString">
             <summary>
             Text summary of the box.

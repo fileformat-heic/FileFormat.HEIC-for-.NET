@@ -16,5 +16,5 @@ using System.Reflection;
 [assembly: AssemblyCompany("Openize Pty Ltd.")]
 [assembly: AssemblyCopyright("Copyright © 2024 Openize Pty Ltd.")]
 
-[assembly: AssemblyVersion("24.5.1")]
-[assembly: AssemblyFileVersion("24.5.1")]
+[assembly: AssemblyVersion("24.6.0")]
+[assembly: AssemblyFileVersion("24.6.0")]

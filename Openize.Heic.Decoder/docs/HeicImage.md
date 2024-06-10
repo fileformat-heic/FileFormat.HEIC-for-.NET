@@ -7,7 +7,8 @@ Heic image class.
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Header** | **HeicHeader** | Heic image header. Grants convinient access to IsoBmff container meta data. | 
-**Frames** | **Dictionary<uint, HeicImageFrame>** | Dictionary of Heic image frames with access by identifier. | 
+**Frames** | **Dictionary<uint, HeicImageFrame>** | Dictionary of public Heic image frames with access by identifier. | 
+**AllFrames** | **Dictionary<uint, HeicImageFrame>** | Dictionary of all Heic image frames with access by identifier. | 
 **DefaultImage** | **HeicImageFrame** | Returns the default image frame, which is specified in meta data. | 
 **Width** | **uint** | Width of the default image frame in pixels. | 
 **Height** | **uint** | Height of the default image frame in pixels. | 

@@ -36,6 +36,18 @@ namespace Openize.Heic.Decoder
         /// Image Grid.
         /// Reconstructing a grid of input images of the same width and height.
         /// </summary>
-        grid = 0x67726964
+        grid = 0x67726964,
+
+        /// <summary>
+        /// Exif metadata.
+        /// Exchangeable image file format metadata.
+        /// </summary>
+        Exif = 0x45786966,
+
+        /// <summary>
+        /// MIME metadata.
+        /// Resource Description Framework metadata.
+        /// </summary>
+        mime = 0x6d696d65
     }
 }

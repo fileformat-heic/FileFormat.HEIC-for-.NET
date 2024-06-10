@@ -19,6 +19,7 @@ Name | Type | Description | Notes
 **content_type** | **string** | A null‐terminated string in UTF‐8 characters with the MIME type of the item.<br />If the item is content encoded (see below), then the content type refers to the item after content decoding. | 
 **item_uri_type** | **string** | A string that is an absolute URI, that is used as a type indicator. | 
 **content_encoding** | **string** | An optional null‐terminated string in UTF‐8 characters used to indicate that the binary file is encoded and needs to be decoded before interpreted. The values are as defined for Content‐Encoding for HTTP/1.1. | 
+**item_hidden** | **bool** | A bool value, that shows if item is hidden. | 
 
 ## Constructors
 
