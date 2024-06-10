@@ -13,6 +13,7 @@ using Openize.IsoBmff;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Openize.Heic.Decoder
 {
@@ -26,6 +27,7 @@ namespace Openize.Heic.Decoder
 
         private uint id;
         private IlocItem locationBox;
+        private ItemInfoEntry informationBox;
         private HeicImage parent;
         private BitStreamWithNalSupport stream;
         private bool cashed;
@@ -79,25 +81,42 @@ namespace Openize.Heic.Decoder
         public bool HasAlpha => alphaReference != null;
 
         /// <summary>
-        /// Indicates the fact that frame contains only transform data and is inherited from another frame.
+        /// Indicates the fact that frame is marked as hidden.
         /// </summary>
-        /// <returns>True if frame is derived, false otherwise.</returns>
-        public bool IsDerived { get; }
+        /// <returns>True if frame is hidden, false otherwise.</returns>
+        public bool IsHidden { get; private set; }
 
         /// <summary>
-        /// 
+        /// Indicates the fact that frame contains image data.
+        /// </summary>
+        /// <returns>True if frame is image, false otherwise.</returns>
+        public bool IsImage => ImageType == ImageFrameType.hvc1 || IsDerived;
+
+        /// <summary>
+        /// Indicates the fact that frame contains image transform data and is inherited from another frame(-s).
+        /// </summary>
+        /// <returns>True if frame is derived, false otherwise.</returns>
+        public bool IsDerived => ImageType == ImageFrameType.iden || ImageType == ImageFrameType.iovl || ImageType == ImageFrameType.grid;
+
+        /// <summary>
+        /// Indicates the type of derivative content if the frame is derived.
         /// </summary>
         public BoxType? DerivativeType { get; private set; }
 
         /// <summary>
+        /// Indicates the type of auxiliary reference layer if the frame type is auxiliary.
+        /// </summary>
+        public AuxiliaryReferenceType AuxiliaryReferenceType { get; private set; }
+
+        /// <summary>
         /// Number of channels with color data.
         /// </summary>
-        public byte NumberOfChannels { get; set; }
+        public byte NumberOfChannels { get; private set; }
 
         /// <summary>
         /// Bits per channel with color data.
         /// </summary>
-        public byte[] BitsPerChannel { get; set; }
+        public byte[] BitsPerChannel { get; private set; }
 
         #endregion
 
@@ -132,11 +151,13 @@ namespace Openize.Heic.Decoder
         /// <param name="properties">Frame properties described in container.</param>
         internal HeicImageFrame(BitStreamWithNalSupport stream, HeicImage parent, uint id, List<Box> properties)
         {
-            ImageType = (ImageFrameType)parent.Header.GetInfoBoxById(id).item_type;
-
-            IsDerived = ImageType == ImageFrameType.iden || ImageType == ImageFrameType.iovl || ImageType == ImageFrameType.grid;
-
+            DerivativeType = parent.Header.GetDerivedType(id);
+            informationBox = parent.Header.GetInfoBoxById(id);
             locationBox = parent.Header.GetLocationBoxById(id);
+
+            AuxiliaryReferenceType = AuxiliaryReferenceType.Undefined;
+            ImageType = (ImageFrameType)informationBox.item_type;
+            IsHidden = informationBox.item_hidden;
 
             this.id = id;
             this.stream = stream;
@@ -156,9 +177,12 @@ namespace Openize.Heic.Decoder
         /// </summary>
         /// <param name="pixelFormat">Pixel format that defines the order of colors and the presence of alpha byte.</param>
         /// <param name="boundsRectangle">Bounds of the requested area.</param>
-        /// <returns>Byte array</returns>
+        /// <returns>Byte array, null if frame does not contain image data.</returns>
         public byte[] GetByteArray(PixelFormat pixelFormat, Rectangle boundsRectangle = default)
         {
+            if (!IsImage)
+                return null;
+
             boundsRectangle = ValidateBounds(boundsRectangle);
 
             byte[,,] threeDim = GetMultidimArray(boundsRectangle);
@@ -188,9 +212,12 @@ namespace Openize.Heic.Decoder
         /// </summary>
         /// <param name="pixelFormat">Pixel format that defines the order of colors.</param>
         /// <param name="boundsRectangle">Bounds of the requested area.</param>
-        /// <returns>Integer array</returns>
+        /// <returns>Integer array, null if frame does not contain image data.</returns>
         public int[] GetInt32Array(PixelFormat pixelFormat, Rectangle boundsRectangle = default)
         {
+            if (!IsImage)
+                return null;
+
             boundsRectangle = ValidateBounds(boundsRectangle);
 
             byte[,,] threeDim = GetMultidimArray(boundsRectangle);
@@ -214,6 +241,21 @@ namespace Openize.Heic.Decoder
             return output;
         }
 
+        /// <summary>
+        /// Get frame text data.
+        /// <para>Exists only for mime frame types.</para>
+        /// </summary>
+        /// <returns>String</returns>
+        public string GetTextData()
+        {
+            if (ImageType != ImageFrameType.mime)
+                return "";
+
+            var location = parent.Header.Meta.iloc.items.First(i => i.item_ID == id);
+            stream.SetBytePosition(location.base_offset + location.extents[0].offset);
+            return stream.ReadString();
+        }
+
         #endregion
 
         #region Internal Methods
@@ -224,11 +266,11 @@ namespace Openize.Heic.Decoder
         /// </summary>
         /// <param name="id">Layer identificator.</param>
         /// <param name="type">Layer type.</param>
-        internal void AddLayerReference(uint id, HeicFrameReferenceType type)
+        internal void AddLayerReference(uint id, AuxiliaryReferenceType type)
         {
             switch (type)
             {
-                case HeicFrameReferenceType.Alpha:
+                case AuxiliaryReferenceType.Alpha:
                     alphaReference = id;
                     break;
                 default:
@@ -242,42 +284,40 @@ namespace Openize.Heic.Decoder
 
         private byte[,,] GetMultidimArray(Rectangle boundsRectangle)
         {
-            byte[,,] rgba;
-            if (!IsDerived)
+            byte[,,] rgba = null;
+
+            byte[] databox = locationBox.construction_method == 1 ?
+                parent.Header.GetItemDataBoxContent(
+                    locationBox.base_offset + locationBox.extents[0].offset,
+                    locationBox.extents[0].length) :
+                new byte[0];
+
+            switch (ImageType)
             {
-                if (!cashed)
-                    LoadHvcRawPixels();
+                case ImageFrameType.hvc1:
+                    if (!cashed)
+                        LoadHvcRawPixels();
 
-                DerivativeType = parent.Header.GetDerivedType(id);
-
-                var converter = new YuvConverter(this);
-                rgba = converter.GetRgbaByteArray();
+                    var converter = new YuvConverter(this);
+                    rgba = converter.GetRgbaByteArray();
+                    break;
+                case ImageFrameType.iden:
+                    var derived = parent.Header.GetDerivedList(id);
+                    HeicImageFrame frame = parent.AllFrames[derived[0]];
+                    rgba = frame.GetMultidimArray(new Rectangle(0, 0, (int)frame.Width, (int)frame.Height));
+                    break;
+                case ImageFrameType.iovl:
+                    rgba = GetByteArrayForOverlay(databox);
+                    break;
+                case ImageFrameType.grid:
+                    rgba = GetByteArrayForGrid(databox);
+                    break;
+                default:
+                    throw new Exception("Unknown image type.");
             }
-            else
-            {
-                byte[] databox = locationBox.construction_method == 1 ?
-                    parent.Header.GetItemDataBoxContent(
-                        locationBox.base_offset + locationBox.extents[0].offset,
-                        locationBox.extents[0].length) :
-                    new byte[0];
 
-                switch (ImageType)
-                {
-                    case ImageFrameType.iden:
-                        var derived = parent.Header.GetDerivedList(id);
-                        HeicImageFrame frame = parent.Frames[derived[0]];
-                        rgba = frame.GetMultidimArray(new Rectangle(0, 0, (int)frame.Width, (int)frame.Height));
-                        break;
-                    case ImageFrameType.iovl:
-                        rgba = GetByteArrayForOverlay(databox);
-                        break;
-                    case ImageFrameType.grid:
-                        rgba = GetByteArrayForGrid(databox);
-                        break;
-                    default:
-                        throw new Exception("Unknown derived image.");
-                }
-            }
+            if (rgba == null)
+                return null;
 
             rgba = AddAlphaLayer(rgba, boundsRectangle);
 
@@ -302,7 +342,7 @@ namespace Openize.Heic.Decoder
             if (alphaReference == null)
                 return pixels;
 
-            var alpha = parent.Frames[alphaReference ?? 0].GetMultidimArray(boundsRectangle);
+            var alpha = parent.AllFrames[alphaReference ?? 0].GetMultidimArray(boundsRectangle);
 
             for (uint row = 0; row < Height; row++)
             {
@@ -411,9 +451,6 @@ namespace Openize.Heic.Decoder
 
         private ushort[][,] LoadHvcRawPixels()
         {
-            if (ImageType != ImageFrameType.hvc1)
-                return null;
-
             stream.CurrentImageId = id;
             stream.SetBytePosition(locationBox.base_offset + locationBox.extents[0].offset);
             NalUnit.ParseUnit(stream);
@@ -445,7 +482,7 @@ namespace Openize.Heic.Decoder
                 for (int j = 0; j <= columns; j++)
                 {
                     index = i * (columns + 1) + j;
-                    frame = parent.Frames[derived[index]];
+                    frame = parent.AllFrames[derived[index]];
                     framePixels = frame.GetMultidimArray(new Rectangle(0, 0, (int)frame.Width, (int)frame.Height));
 
                     for (int k = 0; k < frame.Height; k++)
@@ -508,7 +545,7 @@ namespace Openize.Heic.Decoder
 
             for (int i = 0; i < derived.Length; i++)
             {
-                frame = parent.Frames[derived[i]];
+                frame = parent.AllFrames[derived[i]];
                 framePixels = frame.GetMultidimArray(new Rectangle(0, 0, (int)frame.Width, (int)frame.Height));
 
                 for (int k = 0; k < frame.Height; k++)
@@ -575,25 +612,25 @@ namespace Openize.Heic.Decoder
                     case 0x61757843: // auxC
                         var auxC = item as AuxiliaryTypeProperty;
 
-                        HeicFrameReferenceType type = HeicFrameReferenceType.Undefined;
+                        AuxiliaryReferenceType = AuxiliaryReferenceType.Undefined;
 
                         switch (auxC.aux_type)
                         {
                             case "urn:mpeg:hevc:2015:auxid:1\0":
-                                type = HeicFrameReferenceType.Alpha;
+                                AuxiliaryReferenceType = AuxiliaryReferenceType.Alpha;
                                 break;
                             case "urn:mpeg:hevc:2015:auxid:2\0":
-                                type = HeicFrameReferenceType.DepthMap;
+                                AuxiliaryReferenceType = AuxiliaryReferenceType.DepthMap;
                                 break;
                             case "urn:com:apple:photo:2020:aux:hdrgainmap\0":
-                                type = HeicFrameReferenceType.Hdr;
+                                AuxiliaryReferenceType = AuxiliaryReferenceType.Hdr;
                                 break;
                         }
 
                         var derived = parent.Header.GetDerivedList(id);
                         foreach (var derivedId in derived)
                         {
-                            parent.Frames[derivedId].AddLayerReference(id, type);
+                            parent.AllFrames[derivedId].AddLayerReference(id, AuxiliaryReferenceType);
                         }
                         break;
                     case 0x636c6170: // clap

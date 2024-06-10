@@ -9,6 +9,8 @@
  */
 
 using Openize.IsoBmff.IO;
+using System;
+using System.IO;
 
 namespace Openize.IsoBmff
 {

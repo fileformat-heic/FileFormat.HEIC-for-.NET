@@ -14,6 +14,7 @@ using Openize.IsoBmff.IO;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Openize.Heic.Decoder
 {
@@ -59,9 +60,14 @@ namespace Openize.Heic.Decoder
         public HeicHeader Header { get; private set; }
 
         /// <summary>
-        /// Dictionary of Heic image frames with access by identifier.
+        /// Dictionary of public Heic image frames with access by identifier.
         /// </summary>
-        public Dictionary<uint, HeicImageFrame> Frames => _frames;
+        public Dictionary<uint, HeicImageFrame> Frames => _frames.Where(f => !f.Value.IsHidden).ToDictionary(mc => mc.Key, mc => mc.Value);
+
+        /// <summary>
+        /// Dictionary of all Heic image frames with access by identifier.
+        /// </summary>
+        public Dictionary<uint, HeicImageFrame> AllFrames => _frames;
 
         /// <summary>
         /// Returns the default image frame, which is specified in meta data.
@@ -145,12 +151,16 @@ namespace Openize.Heic.Decoder
         {
             var rawProperties = Header.GetProperties();
 
-            foreach (var entry in rawProperties)
+            foreach (var item in Header.Meta.iloc.items)
             {
-                uint id = entry.Key;
+                uint id = item.item_ID;
 
-                _frames.Add(id, new HeicImageFrame(stream, this, id, entry.Value));
+                if (rawProperties.ContainsKey(id))
+                    _frames.Add(id, new HeicImageFrame(stream, this, id, rawProperties[id]));
+                else
+                    _frames.Add(id, new HeicImageFrame(stream, this, id, new List<Box>()));
             }
+
         }
 
         #endregion

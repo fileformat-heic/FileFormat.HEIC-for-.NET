@@ -11,9 +11,9 @@
 namespace Openize.Heic.Decoder
 {
     /// <summary>
-    /// Type of reference layers that are reverce-linked.
+    /// Type of auxiliary reference layer.
     /// </summary>
-    enum HeicFrameReferenceType
+    public enum AuxiliaryReferenceType
     {
         /// <summary>
         /// Transparency layer.

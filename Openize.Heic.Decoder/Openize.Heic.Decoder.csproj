@@ -59,7 +59,7 @@
     <Compile Include="BmffBoxes\HEVCConfigurationBox.cs" />
     <Compile Include="Context\pps_range_extension.cs" />
     <Compile Include="Context\pps_scc_extension.cs" />
-    <Compile Include="HeicFrameReferenceType.cs" />
+    <Compile Include="AuxiliaryReferenceType.cs" />
     <Compile Include="HeicImageFrame.cs" />
     <Compile Include="ImageFrameType.cs" />
     <Compile Include="IO\BitStreamWithNalSupport.cs" />

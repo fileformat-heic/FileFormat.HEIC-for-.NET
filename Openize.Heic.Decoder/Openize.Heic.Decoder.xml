@@ -4,27 +4,27 @@
         <name>Openize.Heic.Decoder</name>
     </assembly>
     <members>
-        <member name="T:Openize.Heic.Decoder.HeicFrameReferenceType">
+        <member name="T:Openize.Heic.Decoder.AuxiliaryReferenceType">
             <summary>
-            Type of reference layers that are reverce-linked.
+            Type of auxiliary reference layer.
             </summary>
         </member>
-        <member name="F:Openize.Heic.Decoder.HeicFrameReferenceType.Alpha">
+        <member name="F:Openize.Heic.Decoder.AuxiliaryReferenceType.Alpha">
             <summary>
             Transparency layer.
             </summary>
         </member>
-        <member name="F:Openize.Heic.Decoder.HeicFrameReferenceType.DepthMap">
+        <member name="F:Openize.Heic.Decoder.AuxiliaryReferenceType.DepthMap">
             <summary>
             Depth map layer.
             </summary>
         </member>
-        <member name="F:Openize.Heic.Decoder.HeicFrameReferenceType.Hdr">
+        <member name="F:Openize.Heic.Decoder.AuxiliaryReferenceType.Hdr">
             <summary>
             High dynamic range layer.
             </summary>
         </member>
-        <member name="F:Openize.Heic.Decoder.HeicFrameReferenceType.Undefined">
+        <member name="F:Openize.Heic.Decoder.AuxiliaryReferenceType.Undefined">
             <summary>
             Undefined layer.
             </summary>
@@ -67,15 +67,32 @@
             </summary>
             <returns>True if frame is linked with alpha data frame, false otherwise.</returns>
         </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.IsHidden">
+            <summary>
+            Indicates the fact that frame is marked as hidden.
+            </summary>
+            <returns>True if frame is hidden, false otherwise.</returns>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.IsImage">
+            <summary>
+            Indicates the fact that frame contains image data.
+            </summary>
+            <returns>True if frame is image, false otherwise.</returns>
+        </member>
         <member name="P:Openize.Heic.Decoder.HeicImageFrame.IsDerived">
             <summary>
-            Indicates the fact that frame contains only transform data and is inherited from another frame.
+            Indicates the fact that frame contains image transform data and is inherited from another frame(-s).
             </summary>
             <returns>True if frame is derived, false otherwise.</returns>
         </member>
         <member name="P:Openize.Heic.Decoder.HeicImageFrame.DerivativeType">
             <summary>
-            
+            Indicates the type of derivative content if the frame is derived.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImageFrame.AuxiliaryReferenceType">
+            <summary>
+            Indicates the type of auxiliary reference layer if the frame type is auxiliary.
             </summary>
         </member>
         <member name="P:Openize.Heic.Decoder.HeicImageFrame.NumberOfChannels">
@@ -120,7 +137,7 @@
             </summary>
             <param name="pixelFormat">Pixel format that defines the order of colors and the presence of alpha byte.</param>
             <param name="boundsRectangle">Bounds of the requested area.</param>
-            <returns>Byte array</returns>
+            <returns>Byte array, null if frame does not contain image data.</returns>
         </member>
         <member name="M:Openize.Heic.Decoder.HeicImageFrame.GetInt32Array(Openize.Heic.Decoder.PixelFormat,System.Drawing.Rectangle)">
             <summary>
@@ -129,9 +146,16 @@
             </summary>
             <param name="pixelFormat">Pixel format that defines the order of colors.</param>
             <param name="boundsRectangle">Bounds of the requested area.</param>
-            <returns>Integer array</returns>
+            <returns>Integer array, null if frame does not contain image data.</returns>
         </member>
-        <member name="M:Openize.Heic.Decoder.HeicImageFrame.AddLayerReference(System.UInt32,Openize.Heic.Decoder.HeicFrameReferenceType)">
+        <member name="M:Openize.Heic.Decoder.HeicImageFrame.GetTextData">
+            <summary>
+            Get frame text data.
+            <para>Exists only for mime frame types.</para>
+            </summary>
+            <returns>String</returns>
+        </member>
+        <member name="M:Openize.Heic.Decoder.HeicImageFrame.AddLayerReference(System.UInt32,Openize.Heic.Decoder.AuxiliaryReferenceType)">
             <summary>
             Add layer reference to the frame.
             Used to link reference layers that are reverce-linked (alpha layer, depth map, hdr).
@@ -165,6 +189,18 @@
             <summary>
             Image Grid.
             Reconstructing a grid of input images of the same width and height.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.ImageFrameType.Exif">
+            <summary>
+            Exif metadata.
+            Exchangeable image file format metadata.
+            </summary>
+        </member>
+        <member name="F:Openize.Heic.Decoder.ImageFrameType.mime">
+            <summary>
+            MIME metadata.
+            Resource Description Framework metadata.
             </summary>
         </member>
         <member name="T:Openize.Heic.Decoder.IO.BitStreamWithNalSupport">
@@ -383,7 +419,12 @@
         </member>
         <member name="P:Openize.Heic.Decoder.HeicImage.Frames">
             <summary>
-            Dictionary of Heic image frames with access by identifier.
+            Dictionary of public Heic image frames with access by identifier.
+            </summary>
+        </member>
+        <member name="P:Openize.Heic.Decoder.HeicImage.AllFrames">
+            <summary>
+            Dictionary of all Heic image frames with access by identifier.
             </summary>
         </member>
         <member name="P:Openize.Heic.Decoder.HeicImage.DefaultImage">
