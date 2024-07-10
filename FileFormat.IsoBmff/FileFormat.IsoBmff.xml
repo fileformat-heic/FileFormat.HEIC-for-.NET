@@ -1,0 +1,1713 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FileFormat.IsoBmff</name>
+    </assembly>
+    <members>
+        <member name="T:FileFormat.IsoBmff.AuxiliaryTypeProperty">
+            <summary>
+            AuxiliaryTypeProperty box includes a URN identifying the type of the auxiliary image.
+            AuxiliaryTypeProperty may additionally include other fields, as required by the URN.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.AuxiliaryTypeProperty.aux_type">
+            <summary>
+            A null-terminated UTF-8 character string of the Uniform Resource Name (URN) used to identify the type of the associated auxiliary image item.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.AuxiliaryTypeProperty.aux_subtype">
+            <summary>
+            Zero or more bytes until the end of the box. The semantics of these bytes depend on the value of aux_type.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.AuxiliaryTypeProperty.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.AuxiliaryTypeProperty.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.Box">
+            <summary>
+            Structure for storing data in IsoBmff files.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.Box.size">
+            <summary>
+            An integer that specifies the number of bytes in this box, including all its fields and 
+            contained boxes; if size is 1 then the actual size is in the field largesize; if size is 0, then this
+            box is the last one in the file, and its contents extend to the end of the file
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.Box.type">
+            <summary>
+            Identifies the box type; standard boxes use a compact type, which is normally four printable 
+            characters, to permit ease of identification, and is shown so in the boxes below. User extensions
+            use an extended type; in this case, the type field is set to 'uuid'.
+            </summary>
+        </member>
+        <member name="T:FileFormat.IsoBmff.Box.ExternalBoxConstructor">
+            <summary>
+            External box constructor for unimplemented box types.
+            </summary>
+            <param name="stream">Stream reader.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="F:FileFormat.IsoBmff.Box._externalParsersDictionary">
+            <summary>
+            Dictionary of external box constructors.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.Box.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.Box.#ctor(FileFormat.IsoBmff.IO.BitStreamReader)">
+            <summary>
+            Create the box object from the bitstream.
+            </summary>
+            <param name="stream">File stream.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.Box.#ctor(FileFormat.IsoBmff.BoxType,System.UInt64)">
+            <summary>
+            Create the box object from the box type and box size in bytes.
+            This constructor doesn't read data from the stream.
+            </summary>
+            <param name="boxtype">Box type integer.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.Box.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,FileFormat.IsoBmff.BoxType)">
+            <summary>
+            Create the box object from the bitstream and box type.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="boxtype">Box type integer.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.Box.ParceBox(FileFormat.IsoBmff.IO.BitStreamReader)">
+            <summary>
+            Read next box from stream.
+            </summary>
+            <param name="stream">File stream reader.</param>
+            <returns>Parces box.</returns>
+        </member>
+        <member name="M:FileFormat.IsoBmff.Box.SetExternalConstructor(FileFormat.IsoBmff.BoxType,FileFormat.IsoBmff.Box.ExternalBoxConstructor)">
+            <summary>
+            Add external constructor for unimplemented box type.
+            </summary>
+            <param name="type">Box type.</param>
+            <param name="parser">External box constructor.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.Box.UintToString(System.UInt32)">
+            <summary>
+            Convert uint value to string with ASCII coding.
+            </summary>
+            <param name="value">Unsigned integer.</param>
+            <returns>ASCII string.</returns>
+        </member>
+        <member name="T:FileFormat.IsoBmff.BoxType">
+            <summary>
+            Type of the container box.
+            Used definitions from ISO IEC 14496 Part 12, ISO IEC 14496 Part 15 and ISO IEC 23008 Part 12.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.ftyp">
+            <summary>
+            File type and compatibility. Located in the root.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.mdat">
+            <summary>
+            Media data container. Located in the root.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.free">
+            <summary>
+            Free space.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.skip">
+            <summary>
+            Free space.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.moov">
+            <summary>
+            Container for all the movie metadata. Located in the root.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.meta">
+            <summary>
+            Metadata. Located in the root.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.hdlr">
+            <summary>
+            Handler, declares the metadata (handler) type. Located in the 'meta' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.dinf">
+            <summary>
+            Data information box, container. Located in the 'meta' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.dref">
+            <summary>
+            Data reference box, declares source(s) of items. Located in the 'dinf' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.url">
+            <summary>
+            Data reference box, declares source(s) of metadata items.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.urn">
+            <summary>
+            Data reference box, declares source(s) of metadata items.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.iloc">
+            <summary>
+            Item location. Located in the 'meta' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.idat">
+            <summary>
+            Item data. Located in the 'meta' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.iinf">
+            <summary>
+            Item information. Located in the 'meta' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.infe">
+            <summary>
+            Item information entry. Located in the 'iinf' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.iref">
+            <summary>
+            Item reference box. Located in the 'meta' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.dimg">
+            <summary>
+            Derived image item. Located in the 'iref' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.auxl">
+            <summary>
+            Auxiliary media for the indicated track (e.g. depth map or alpha plane for video). Located in the 'iref' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.thmb">
+            <summary>
+            Thumbnails for the referenced track. Located in the 'iref' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.pitm">
+            <summary>
+            Primary item reference. Located in the 'meta' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.iprp">
+            <summary>
+            Item properties. Located in the 'meta' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.ipma">
+            <summary>
+            Item property association. Located in the 'iprp' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.ipco">
+            <summary>
+            List of item properties. Located in the 'iprp' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.av1C">
+            <summary>
+            AV1 coded item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.hvcC">
+            <summary>
+            HEVC coded item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.ispe">
+            <summary>
+            Width and height item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.pasp">
+            <summary>
+            Pixel aspect ratio item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.colr">
+            <summary>
+            Colour information item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.pixi">
+            <summary>
+            Bit depth item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.rloc">
+            <summary>
+            Position item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.auxC">
+            <summary>
+            Auxiliary images association item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.clap">
+            <summary>
+            Transformation item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.irot">
+            <summary>
+            Rotation item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.lsel">
+            <summary>
+            Multi-layer item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.imir">
+            <summary>
+            Mirroring item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.oinf">
+            <summary>
+            Operation points information item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.udes">
+            <summary>
+            User description item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.cdsc">
+            <summary>
+            Content describtion item property. Located in the 'ipco' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.grpl">
+            <summary>
+            Grouping property box. Located in the 'meta' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.altr">
+            <summary>
+            Alternatives entity group. Located in the 'grpl' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.ster">
+            <summary>
+            Stereo pair entity group. Located in the 'grpl' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.tsyn">
+            <summary>
+            A time-synchronized capture entity group. Located in the 'grpl' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.ipro">
+            <summary>
+            Item protection. Located in the root.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.sinf">
+            <summary>
+            Protection scheme information box. Located in the 'ipro' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.frma">
+            <summary>
+            Original format box. Located in the 'sinf' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.schm">
+            <summary>
+            Scheme type box. Located in the 'sinf' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.schi">
+            <summary>
+            Scheme information box. Located in the 'sinf' box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.BoxType.uuid">
+            <summary>
+            Extended type.
+            </summary>
+        </member>
+        <member name="T:FileFormat.IsoBmff.CleanApertureBox">
+            <summary>
+            The clean aperture transformative item property defines a cropping transformation of the input image.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.CleanApertureBox.cleanApertureWidthN">
+            <summary>
+            A numerator of the fractional number which defines the exact clean aperture width, in counted pixels, of the image.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.CleanApertureBox.cleanApertureWidthD">
+            <summary>
+            A denominator of the fractional number which defines the exact clean aperture width, in counted pixels, of the image.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.CleanApertureBox.cleanApertureHeightN">
+            <summary>
+            A numerator of the fractional number which defines the exact clean aperture height, in counted pixels, of the image.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.CleanApertureBox.cleanApertureHeightD">
+            <summary>
+            A denominator of the fractional number which defines the exact clean aperture height, in counted pixels, of the image.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.CleanApertureBox.horizOffN">
+            <summary>
+            A numerator of the fractional number which defines the horizontal offset of clean aperture centre minus(width‐1)/2. Typically 0.	
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.CleanApertureBox.horizOffD">
+            <summary>
+            A denominator of the fractional number which defines the horizontal offset of clean aperture centre minus(width‐1)/2. Typically 0.	
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.CleanApertureBox.vertOffN">
+            <summary>
+            A numerator of the fractional number which defines the vertical offset of clean aperture centre minus(height‐1)/2. Typically 0.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.CleanApertureBox.vertOffD">
+            <summary>
+            A denominator of the fractional number which defines the vertical offset of clean aperture centre minus(height‐1)/2. Typically 0.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.CleanApertureBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.CleanApertureBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ColourInformationBox">
+            <summary>
+            Contains colour information about the image.
+            If colour information is supplied in both this box, and also in the video bitstream,
+            this box takes precedence, and over‐rides the information in the bitstream.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ColourInformationBox.colour_type">
+            <summary>
+            An indication of the type of colour information supplied.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ColourInformationBox.colour_primaries">
+            <summary>
+            Indicates the chromaticity coordinates of the source primaries.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ColourInformationBox.transfer_characteristics">
+            <summary>
+            Indicates the reference opto-electronic transfer characteristic.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ColourInformationBox.matrix_coefficients">
+            <summary>
+            Describes the matrix coefficients used in deriving luma and chroma signals from the green, blue, and red.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ColourInformationBox.full_range_flag">
+            <summary>
+            Indicates the black level and range of the luma and chroma signals as derived from E′Y, E′PB, and E′PR or E′R, E′G, and E′B real-valued component signals.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ColourInformationBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ColourInformationBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.DataEntryUrlBox">
+            <summary>
+            Data reference URL that declare the location of the media data used within the presentation.
+            The data reference index in the sample description ties entries in this table to the samples in the track.
+            A track may be split over several sources in this way.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.DataEntryUrlBox.name">
+            <summary>
+            Name of the entry.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.DataEntryUrlBox.location">
+            <summary>
+            Location of the entry.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.DataEntryUrlBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.DataEntryUrlBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader)">
+            <summary>
+            Create the box object from the bitstream.
+            </summary>
+            <param name="stream">File stream.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.DataInformationBox">
+            <summary>
+            The data information box contains objects that declare the location of the media information in a track.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.DataInformationBox.dref">
+            <summary>
+            The data reference object contains a table of data references (normally URLs) that declare the 
+            location(s) of the media data used within the presentation.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.DataInformationBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.DataInformationBox.Children">
+            <summary>
+            Observable collection of the nested boxes.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.DataInformationBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.DataReferenceBox">
+            <summary>
+            The data reference object contains a table of data references (normally URLs) that declare the 
+            location(s) of the media data used within the presentation.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.DataReferenceBox.entry_count">
+            <summary>
+            The count of data references.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.DataReferenceBox.entries">
+            <summary>
+            The list of data references.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.DataReferenceBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.DataReferenceBox.Children">
+            <summary>
+            Observable collection of the nested boxes.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.DataReferenceBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader)">
+            <summary>
+            Create the box object from the bitstream.
+            </summary>
+            <param name="stream">File stream.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.EntityToGroupBox">
+            <summary>
+            The EntityToGroupBox specifies an entity group.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.EntityToGroupBox.group_id">
+            <summary>
+            A non-negative integer assigned to the particular grouping that shall not be equal
+            to any group_id value of any other EntityToGroupBox, any item_ID value of the hierarchy
+            level(file, movie. or track) that contains the GroupsListBox, or any track_ID value(when the
+            GroupsListBox is contained in the file level).
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.EntityToGroupBox.num_entities_in_group">
+            <summary>
+            The number of entity_id values mapped to this entity group.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.EntityToGroupBox.entities">
+            <summary>
+            Array of identificators of items that are present in the hierarchy level(file, movie or track) 
+            that contains the GroupsListBox, or to a track, when a track with track_ID equal to entity_id 
+            is present and the GroupsListBox is contained in the file level.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.EntityToGroupBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.EntityToGroupBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader)">
+            <summary>
+            Create the box object from the bitstream.
+            </summary>
+            <param name="stream">File stream.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.FileTypeBox">
+            <summary>
+            This box identifies the specifications to which this file complies. 
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.FileTypeBox.major_brand">
+            <summary>
+            A brand identifier.
+            <para>Each brand is a printable four‐character code, registered with ISO, that identifies a precise specification.</para>
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.FileTypeBox.minor_version">
+            <summary>
+            An informative integer for the minor version of the major brand.
+            <para>Each brand is a printable four‐character code, registered with ISO, that identifies a precise specification.</para>
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.FileTypeBox.compatible_brands">
+            <summary>
+            A list of compatible brands.
+            <para>Each brand is a printable four‐character code, registered with ISO, that identifies a precise specification.</para>
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.FileTypeBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.FileTypeBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.FileTypeBox.IsBrandSupported(System.UInt32)">
+            <summary>
+            Checks if specified brand is supported.
+            </summary>
+            <param name="brand">The specified brand.</param>
+            <returns>True if brand is supported, false otherwise.</returns>
+        </member>
+        <member name="T:FileFormat.IsoBmff.FullBox">
+            <summary>
+            Structure for storing data in IsoBmff files with specified box version and flags.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.FullBox.version">
+            <summary>
+            An integer that specifies the version of this format of the box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.FullBox.flags">
+            <summary>
+            A map of flags.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.FullBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader)">
+            <summary>
+            Create the box object from the bitstream.
+            </summary>
+            <param name="stream">File stream.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.FullBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,FileFormat.IsoBmff.BoxType)">
+            <summary>
+            Create the box object from the bitstream and box type.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="boxtype">Box type integer.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.FullBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,FileFormat.IsoBmff.BoxType,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream, box type and size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="boxtype">Box type integer.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.FullBox.#ctor(FileFormat.IsoBmff.BoxType,System.UInt64,System.Byte,System.Int32)">
+            <summary>
+            Create the box object from the box type, size, version and flags.
+            This constructor doesn't read data from the stream.
+            </summary>
+            <param name="boxtype">Box type integer.</param>
+            <param name="size">Box size in bytes.</param>
+            <param name="version">The version of this format of the box.</param>
+            <param name="flags">The map of flags.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.GroupsListBox">
+            <summary>
+            An entity group is a grouping of items, which may also group tracks. The entities in an entity group
+            share a particular characteristic or have a particular relationship, as indicated by the grouping type.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.GroupsListBox.boxes">
+            <summary>
+            List of nested boxes.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.GroupsListBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.GroupsListBox.Children">
+            <summary>
+            Observable collection of the nested boxes.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.GroupsListBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream, box size and start position.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+            <param name="startPos">Start position in bits.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.HandlerBox">
+            <summary>
+            This box declares media type of the track, and thus the process by which the media‐data in the track is presented.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.HandlerBox.handler_type">
+            <summary>
+            When present in a media box, contains a value as defined in clause 12, or a value from a derived specification, or registration.
+            When present in a meta box, contains an appropriate value to indicate the format of the meta box contents.
+            The value 'null' can be used in the primary meta box to indicate that it is merely being used to hold resources. 
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.HandlerBox.name">
+            <summary>
+            A null‐terminated string in UTF‐8 characters which gives a human‐readable name for the track type (for debugging and inspection purposes).
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.HandlerBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.HandlerBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader)">
+            <summary>
+            Create the box object from the bitstream.
+            </summary>
+            <param name="stream">File stream.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.IlocItem">
+            <summary>
+            Data class for organised storage on location data.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IlocItem.item_ID">
+            <summary>
+            An arbitrary integer 'name' for this resource which can be used to refer to it.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IlocItem.construction_method">
+            <summary>
+            Indicates the location of data:
+            0 means data are located in the current file in mdat box;
+            1 means data are located in the current file in idat box;
+            2 means data are located in the external file.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IlocItem.data_reference_index">
+            <summary>
+            Contains either zero (‘this file’) or a 1‐based index into the data references in the data information box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IlocItem.base_offset">
+            <summary>
+            A base value for offset calculations within the referenced data.
+            If base_offset_size equals 0, base_offset takes the value 0, i.e. it is unused.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IlocItem.extent_count">
+            <summary>
+            Provides the count of the number of extents into which the resource is fragmented;
+            it must have the value 1 or greater.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IlocItem.extents">
+            <summary>
+            Array of extent data.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.IlocItem.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="T:FileFormat.IsoBmff.IlocItemExtent">
+            <summary>
+            Data class for organised storage on location data extents.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IlocItemExtent.index">
+            <summary>
+            An index as defined for the constructionmethod.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IlocItemExtent.offset">
+            <summary>
+            The absolute offset, in bytes from the data origin of the container, of this extent data.
+            If offset_size is 0, extent_offset takes the value 0.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IlocItemExtent.length">
+            <summary>
+            The absolute length in bytes of this metadata item extent.
+            If length_size is 0, extent_length takes the value 0.
+            If the value is 0, then length of the extent is the length of the entire referenced container.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.IlocItemExtent.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ImageMirror">
+            <summary>
+            The image mirroring item property mirrors the image about either a vertical or horizontal axis.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ImageMirror.axis">
+            <summary>
+            Specifies a vertical (axis = 0) or horizontal (axis = 1) axis for the mirroring operation.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ImageMirror.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ImageMirror.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ImageRotation">
+            <summary>
+            The image rotation  transformative item property rotates the reconstructed image of the
+            associated image item in anti-clockwise direction in units of 90 degrees.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ImageRotation.angle">
+            <summary>
+            Specifies the angle (in anti-clockwise direction) in units of 90 degrees.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ImageRotation.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ImageRotation.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ImageSpatialExtentsProperty">
+            <summary>
+            The ImageSpatialExtentsProperty documents the width and height of the associated image item.
+            Every image item shall be associated with one property of this type, prior to the association of all
+            transformative properties.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ImageSpatialExtentsProperty.image_width">
+            <summary>
+            The width of the reconstructed image in pixels.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ImageSpatialExtentsProperty.image_height">
+            <summary>
+            The height of the reconstructed image in pixels.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ImageSpatialExtentsProperty.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ImageSpatialExtentsProperty.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemDataBox">
+            <summary>
+            This box contains the data of metadata items that use the construction method indicating that an item’s 
+            data extents are stored within this box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemDataBox.data">
+            <summary>
+            The contained meta data in raw format.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemDataBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemDataBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream, box size and start position.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+            <param name="startPos">Start position in bits.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemInfoBox">
+            <summary>
+            The item information box provides extra information about file entries.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemInfoBox.entry_count">
+            <summary>
+            A count of the number of entries in the info entry array.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemInfoBox.item_infos">
+            <summary>
+            Array of entries of extra information, each entry is formatted as a box.
+            This array is sorted by increasing item_ID in the entry records.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemInfoBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemInfoBox.Children">
+            <summary>
+            Observable collection of entries of extra information.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemInfoBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemInfoEntry">
+            <summary>
+            This box provides extra information about one entry.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemInfoEntry.item_ID">
+            <summary>
+            Contains either 0 for the primary resource (e.g., the XML contained in an 'xml ' box) or 
+            the ID of the item for which the following information is defined.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemInfoEntry.item_protection_index">
+            <summary>
+            Contains either 0 for an unprotected item, or the one‐based index 
+            into the item protection  box defining the protection applied to this item(the first box in the item
+            protection box has the index 1).
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemInfoEntry.item_type">
+            <summary>
+            A 32‐bit value, typically 4 printable characters, that is a defined valid item type indicator, such as 'mime'. 
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemInfoEntry.item_name">
+            <summary>
+            A null‐terminated string in UTF‐8 characters containing a symbolic name of the item (source file for file delivery transmissions). 
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemInfoEntry.content_type">
+            <summary>
+            A null‐terminated string in UTF‐8 characters with the MIME type of the item.
+            If the item is content encoded (see below), then the content type refers to the item after content decoding.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemInfoEntry.item_uri_type">
+            <summary>
+            A string that is an absolute URI, that is used as a type indicator.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemInfoEntry.content_encoding">
+            <summary>
+            An optional null‐terminated string in UTF‐8 characters used to indicate 
+            that the binary file is encoded and needs to be decoded before interpreted.
+            The values are as defined for Content‐Encoding for HTTP/1.1.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemInfoEntry.item_hidden">
+            <summary>
+            A bool value, that shows if item is hidden.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemInfoEntry.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemInfoEntry.#ctor(FileFormat.IsoBmff.IO.BitStreamReader)">
+            <summary>
+            Create the box object from the bitstream.
+            </summary>
+            <param name="stream">File stream.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemLocationBox">
+            <summary>
+            The item location box provides a directory of resources in this or other files, by locating their container, 
+            their offset within that container, and their length.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemLocationBox.offset_size">
+            <summary>
+            Indicates the length in bytes of the offset field.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemLocationBox.length_size">
+            <summary>
+            Indicates the length in bytes of the length field.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemLocationBox.base_offset_size">
+            <summary>
+            Indicates the length in bytes of the base_offset field.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemLocationBox.index_size">
+            <summary>
+            Indicates the length in bytes of the extent.index field.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemLocationBox.item_count">
+            <summary>
+            Counts the number of items in the location item array. 
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemLocationBox.items">
+            <summary>
+            Array of the location items.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemLocationBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemLocationBox.Children">
+            <summary>
+            Observable collection of the location items.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemLocationBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemPropertiesBox">
+            <summary>
+            The ItemPropertiesBox enables the association of any item with an ordered set of item properties.
+            Item properties are small data records.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemPropertiesBox.property_container">
+            <summary>
+            Contains an implicitly indexed list of item properties.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemPropertiesBox.association">
+            <summary>
+            Associates items with item properties.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemPropertiesBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemPropertiesBox.Children">
+            <summary>
+            Observable collection of the nested boxes.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemPropertiesBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream, box size and start position.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+            <param name="startPos">Start position in bits.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemPropertiesBox.GetProperties">
+            <summary>
+            Returns properties in a convinient form factor.
+            </summary>
+            <returns>Dictionary with Lists of boxes that can be accessed by item id.</returns>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemPropertyAssociation">
+            <summary>
+            Associates items with item properties.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemPropertyAssociation.entry_count">
+            <summary>
+            Count of entries.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemPropertyAssociation.entries">
+            <summary>
+            Property entrie array.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemPropertyAssociation.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemPropertyAssociation.Children">
+            <summary>
+            Observable collection of the property entries.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemPropertyAssociation.#ctor(FileFormat.IsoBmff.IO.BitStreamReader)">
+            <summary>
+            Create the box object from the bitstream.
+            </summary>
+            <param name="stream">File stream.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemPropertyAssociation.ItemPropertyEntry">
+            <summary>
+            Item property entry data.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemPropertyAssociation.ItemPropertyEntry.item_ID">
+            <summary>
+            Identifies the item with which property is associated.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemPropertyAssociation.ItemPropertyEntry.association_count">
+            <summary>
+            Count of associations.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemPropertyAssociation.ItemPropertyEntry.associations">
+            <summary>
+            Array of associations.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemPropertyAssociation.ItemPropertyEntry.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemPropertyAssociation.ItemPropertyEntryAssociation">
+            <summary>
+            Item property association entry data.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemPropertyAssociation.ItemPropertyEntryAssociation.essential">
+            <summary>
+            Set to 1 indicates that the associated property is essential to the item, otherwise it is non-essential.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemPropertyAssociation.ItemPropertyEntryAssociation.property_index">
+            <summary>
+            Is either 0 indicating that no property is associated (the essential indicator shall also be 0),
+            or is the 1-based index of the associated property box in the ItemPropertyContainerBox
+            contained in the same ItemPropertiesBox.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemPropertyAssociation.ItemPropertyEntryAssociation.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemPropertyContainerBox">
+            <summary>
+            Contains an implicitly indexed list of item properties.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemPropertyContainerBox.items">
+            <summary>
+            Dictionary of properties.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemPropertyContainerBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemPropertyContainerBox.Children">
+            <summary>
+            Observable collection of the nested boxes.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemPropertyContainerBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and start position.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="startPos">Start position in bits.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemPropertyContainerBox.GetPropertyByIndex(System.Int32)">
+            <summary>
+            Returns property by index.
+            </summary>
+            <param name="id">Property index.</param>
+            <returns>Box with property data.</returns>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemProtectionBox">
+            <summary>
+            The item protection box provides an array of item protection information, for use by the Item Information Box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemProtectionBox.protection_count">
+            <summary>
+            Count of protection informarion schemas.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemProtectionBox.protection_information">
+            <summary>
+            Array of protecyion informarion schemas. 
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemProtectionBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemProtectionBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ProtectionSchemeInfoBox">
+            <summary>
+            The Protection Scheme Information Box contains all the information required both to understand the 
+            encryption transform applied and its parameters, and also to find other information such as the kind
+            and location of the key management system.
+            </summary>
+        </member>
+        <member name="T:FileFormat.IsoBmff.ItemReferenceBox">
+            <summary>
+            Contains all the linking of one item to others via typed references.
+            All references for one item of a specific type are collected into a single item type reference box.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.ItemReferenceBox.references">
+            <summary>
+            List of references.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemReferenceBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.ItemReferenceBox.Children">
+            <summary>
+            Observable collection of the references.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.ItemReferenceBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream, box size and start position.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+            <param name="startPos">Start position in bits.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.LayerSelectorProperty">
+            <summary>
+            If the decoding of a multi-layer image item results into more than one reconstructed image, the 'lsel'
+            item property shall be associated with the image item.Otherwise, the 'lsel' item property shall not
+            be associated with an image item.
+            <para>This property is used to select which of the reconstructed images is described by subsequent
+            descriptive item properties in the item property association order and manipulated by transformative
+            item properties, if any, to generate an output image of the image item.</para>
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.LayerSelectorProperty.layer_id">
+            <summary>
+            Specifies the layer identifier of the image among the reconstructed images that is described
+            by subsequent descriptive item properties in the item property association order and manipulated by
+            transformative item properties, if any, to generate an output image of the image item.The semantics of
+            layer_id are specific to the coding format and are therefore defined for each coding format for which
+            the decoding of a multi-layer image item can result into more than one reconstructed images.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.LayerSelectorProperty.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.LayerSelectorProperty.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.MetaBox">
+            <summary>
+            A common base structure that contains general metadata.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.MetaBox.boxes">
+            <summary>
+            Dictionary of nested boxes.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MetaBox.hdlr">
+            <summary>
+            Handler box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MetaBox.pitm">
+            <summary>
+            Primary item box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MetaBox.iloc">
+            <summary>
+            Item location box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MetaBox.iinf">
+            <summary>
+            Item info box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MetaBox.iprp">
+            <summary>
+            Item properties box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MetaBox.iref">
+            <summary>
+            Item reference box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MetaBox.idat">
+            <summary>
+            Item data box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MetaBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MetaBox.Children">
+            <summary>
+            Observable collection of the nested boxes.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.MetaBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream, box size and start position.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+            <param name="startPos">Start position in bits.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.MetaBox.TryGetBox(FileFormat.IsoBmff.BoxType)">
+            <summary>
+            Try to get specified box. Return null if required box not available.
+            </summary>
+            <param name="type">Box type.</param>
+            <returns>Box.</returns>
+        </member>
+        <member name="T:FileFormat.IsoBmff.MovieBox">
+            <summary>
+            The metadata for a presentation is stored in the single Movie Box which occurs at the top‐level of a file. 
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.MovieBox.boxes">
+            <summary>
+            List of nested boxes.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MovieBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.MovieBox.Children">
+            <summary>
+            Observable collection of the nested boxes.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.MovieBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream, box size and start position.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+            <param name="startPos">Start position in bits.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.OperatingPointsInformationProperty">
+            <summary>
+            The 'oinf' property informs about the different operating points provided by a bitstream and their
+            constitution.Each operating point is related to an output layer set and a combination of a profile, level
+            and tier.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.OperatingPointsInformationProperty.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.OperatingPointsInformationProperty.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.PixelAspectRatioBox">
+            <summary>
+            Contains the pixel aspect ratio information.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.PixelAspectRatioBox.hSpacing">
+            <summary>
+            Define the relative height of a pixel.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.PixelAspectRatioBox.vSpacing">
+            <summary>
+            Define the relative width of a pixel.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.PixelAspectRatioBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.PixelAspectRatioBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.PixelInformationProperty">
+            <summary>
+            The PixelInformationProperty descriptive item property indicates the number and bit depth of
+            colour components in the reconstructed image of the associated image item.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.PixelInformationProperty.num_channels">
+            <summary>
+            This field signals the number of channels by each pixel of the reconstructed image ofthe associated image item.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.PixelInformationProperty.bits_per_channel">
+            <summary>
+            This field indicates the bits per channel for the pixels of the reconstructed image of the associated image item.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.PixelInformationProperty.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.PixelInformationProperty.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.PrimaryItemBox">
+            <summary>
+            This box contains the identifier of the primary item.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.PrimaryItemBox.item_ID">
+            <summary>
+            The identifier of the primary item.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.PrimaryItemBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.PrimaryItemBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.RelativeLocationProperty">
+            <summary>
+            The RelativeLocationProperty descriptive item property is used to describe the horizontal and
+            vertical position of the reconstructed image of the associated image item relative to the reconstructed
+            image of the related image item identified through the 'tbas' item reference.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.RelativeLocationProperty.horizontal_offset">
+            <summary>
+            Specifies the horizontal offset in pixels of the left-most pixel column of the reconstructed image 
+            of the associated image item in the reconstructed image of the related image item. The left-most 
+            pixel column of the reconstructed image of the related image item has a horizontal offset equal to 0.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.RelativeLocationProperty.vertical_offset">
+            <summary>
+            Specifies the vertical offset in pixels of the top-most pixel row of the reconstructed image 
+            of the associated image item in the reconstructed image of the related image item. The top-most
+            pixel row of the reconstructed image of the related image item has a vertical offset equal to 0.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.RelativeLocationProperty.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.RelativeLocationProperty.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream and box size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.SingleItemTypeReferenceBox">
+            <summary>
+            Collects all references for one item of a specific type.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.SingleItemTypeReferenceBox.from_item_ID">
+            <summary>
+            The ID of the item that refers to other items.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.SingleItemTypeReferenceBox.reference_count">
+            <summary>
+            The number of references.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.SingleItemTypeReferenceBox.to_item_ID">
+            <summary>
+            The array of the IDs of the item referred to.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.SingleItemTypeReferenceBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.SingleItemTypeReferenceBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.Int32)">
+            <summary>
+            Create the box object from the bitstream and item id size.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="id_size">Item id size in bytes.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.UserDescriptionBox">
+            <summary>
+            Contains text description of the image.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.UserDescriptionBox.description">
+            <summary>
+            List of text descriptions of the image.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.UserDescriptionBox.ToString">
+            <summary>
+            Text summary of the box.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.UserDescriptionBox.#ctor(FileFormat.IsoBmff.IO.BitStreamReader,System.UInt64,System.UInt64)">
+            <summary>
+            Create the box object from the bitstream, box size and start position.
+            </summary>
+            <param name="stream">File stream.</param>
+            <param name="size">Box size in bytes.</param>
+            <param name="startPos">Start position in bits.</param>
+        </member>
+        <member name="T:FileFormat.IsoBmff.IO.BitStreamReader">
+            <summary>
+            The BitStreamReader class is designed to read bits from a specified stream.
+            It reads a minimal amount of bytes from the stream into an intermediate buffer
+            and then reads the bits from the buffer, returning the read value.
+            If there is still enough data in the buffer, the data is read from it.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IO.BitStreamReader.stream">
+            <summary>
+            File stream.
+            </summary>
+        </member>
+        <member name="F:FileFormat.IsoBmff.IO.BitStreamReader.state">
+            <summary>
+            Bit reader state.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.#ctor(System.IO.Stream,System.Int32)">
+            <summary>
+            The constructor takes a Stream object and an optional buffer size as parameters.
+            </summary>
+            <param name="stream">The source stream.</param>
+            <param name="bufferSize">The buffer size.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.GetBitPosition">
+            <summary>
+            Gets the current position within the bitstream.
+            <para>The bitstream position is x8 of stream position, adjusted according to the number of bits read from the latest byte.</para>
+            </summary>
+            <returns>Unsinged long value.</returns>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.SetBytePosition(System.Int64)">
+            <summary>
+            Sets the current position within the bitstream.
+            </summary>
+            <param name="bytePosition">The new byte position within the bitstream.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.ByteAligned">
+            <summary>
+            Indicates if the current position in the bitstream is on a byte boundary.
+            </summary>
+            <returns>Returns true if the current position in the bitstream is on a byte boundary, false otherwise.</returns>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.MoreData">
+            <summary>
+            Indicates if there are more data in the bitstream.
+            </summary>
+            <returns>True if there are more data in the bitstream, false otherwise.</returns>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.FillBufferFromStream">
+            <summary>
+            Fill reader buffer with data from stream.
+            </summary>
+            <returns>The tolal amount of bytes read into the buffer.</returns>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.Read(System.Int32)">
+            <summary>
+            Reads the specified number of bits from the stream.
+            </summary>
+            <param name="bitCount">The required number of bits to read.</param>
+            <returns>The integer value.</returns>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.ReadString">
+            <summary>
+            Reads bytes as ASCII characters until '\0'.
+            </summary>
+            <returns>The string value.</returns>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.ReadFlag">
+            <summary>
+            Reads one bit and returns true if it is 1, otherwise false.
+            </summary>
+            <returns>The boolean value.</returns>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.Peek(System.Int32)">
+            <summary>
+            Peeks the specified number of bits from the stream.
+            This method does not change the position of the underlying stream, state of the reader remains unchanged.
+            </summary>
+            <param name="bitCount">The required number of bits to read.</param>
+            <returns>The integer value.</returns>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.SkipBits(System.Int32)">
+            <summary>
+            Skip the specified number of bits in the stream.
+            </summary>
+            <param name="bitsNumber">Number of bits to skip.</param>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.GetBit(System.Int64)">
+            <summary>
+            Reads bit at the specified position.
+            This method does not change the position of the underlying stream, state of the reader remains unchanged.
+            This method is approximately 50% slower than the Read method.
+            </summary>
+        </member>
+        <member name="T:FileFormat.IsoBmff.IO.BitStreamReader.BitReaderState">
+            <summary>
+            Supporting reader structure that contains buffer with read data, position of cursor and other supporting data.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.IO.BitStreamReader.BitReaderState.Buffer">
+            <summary>
+            Buffer data read from stream.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.IO.BitStreamReader.BitReaderState.BufferActiveLength">
+            <summary>
+            Buffer size in bytes.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.IO.BitStreamReader.BitReaderState.BufferPosition">
+            <summary>
+            Tracks the current byte position in the buffer.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.IO.BitStreamReader.BitReaderState.BitIndex">
+            <summary>
+            Tracks the current bit position in the buffer.
+            </summary>
+        </member>
+        <member name="P:FileFormat.IsoBmff.IO.BitStreamReader.BitReaderState.LastStreamPosition">
+            <summary>
+            Last position of the stream the data was read from.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.BitReaderState.Reset">
+            <summary>
+            Resets buffer to empty state.
+            </summary>
+        </member>
+        <member name="M:FileFormat.IsoBmff.IO.BitStreamReader.BitReaderState.ToString">
+            <summary>
+            Returns buffer contect in hex notation.
+            </summary>
+        </member>
+    </members>
+</doc>
