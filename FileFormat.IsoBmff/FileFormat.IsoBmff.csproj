@@ -1,0 +1,109 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <UseTargetFramework Condition=" '$(UseTargetFramework)' == '' ">net8.0</UseTargetFramework>
+	  <TargetFrameworks>net8.0;net6.0;netstandard2.0</TargetFrameworks>
+    <Configurations>Debug;Release;DebugWithUnitTest;ReleaseWithUnitTest;LinuxDebugWithUnitTest;ReleaseDebug;ReleasePython</Configurations>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants>ASPOSE_IMAGING;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(InternalVisibility)' != ''">
+	<DefineConstants>$(InternalVisibility);$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkVersion)' == 'v2.0'">
+    <DefineConstants>$(DefineConstants);NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkVersion)' == 'v2.1'">
+    <DefineConstants>$(DefineConstants);NETSTANDARD2_1</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;$(DefineConstants)</DefineConstants>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWithUnitTest|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;UNIT_TEST;$(DefineConstants)</DefineConstants>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LinuxDebugWithUnitTest|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;UNIT_TEST;$(DefineConstants)</DefineConstants>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithUnitTest|AnyCPU'">
+    <DefineConstants>UNIT_TEST;$(DefineConstants)</DefineConstants>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleasePython|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+	<DefineConstants>PYTHON;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|AnyCPU'">
+	<DefineConstants>RELEASE_DEBUG;$(DefineConstants)</DefineConstants>
+	<DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <EnableDefaultCompileItems>False</EnableDefaultCompileItems>
+    <AssemblyName>FileFormat.IsoBmff</AssemblyName>
+    <RootNamespace>FileFormat.IsoBmff</RootNamespace>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Include="Boxes\AuxiliaryTypeProperty.cs" />
+    <Compile Include="Boxes\Box.cs" />
+    <Compile Include="Boxes\BoxType.cs" />
+    <Compile Include="Boxes\CleanApertureBox.cs" />
+    <Compile Include="Boxes\ColourInformationBox.cs" />
+    <Compile Include="Boxes\DataEntryUrlBox.cs" />
+    <Compile Include="Boxes\DataInformationBox.cs" />
+    <Compile Include="Boxes\DataReferenceBox.cs" />
+    <Compile Include="Boxes\EntityToGroupBox.cs" />
+    <Compile Include="Boxes\FileTypeBox.cs" />
+    <Compile Include="Boxes\FullBox.cs" />
+    <Compile Include="Boxes\GroupsListBox.cs" />
+    <Compile Include="Boxes\HandlerBox.cs" />
+    <Compile Include="Boxes\IlocItem.cs" />
+    <Compile Include="Boxes\IlocItemExtent.cs" />
+    <Compile Include="Boxes\ImageMirror.cs" />
+    <Compile Include="Boxes\ImageRotation.cs" />
+    <Compile Include="Boxes\ImageSpatialExtentsProperty.cs" />
+    <Compile Include="Boxes\ItemDataBox.cs" />
+    <Compile Include="Boxes\ItemInfoBox.cs" />
+    <Compile Include="Boxes\ItemInfoEntry.cs" />
+    <Compile Include="Boxes\ItemLocationBox.cs" />
+    <Compile Include="Boxes\ItemPropertiesBox.cs" />
+    <Compile Include="Boxes\ItemPropertyAssociation.cs" />
+    <Compile Include="Boxes\ItemPropertyContainerBox.cs" />
+    <Compile Include="Boxes\ItemProtectionBox.cs" />
+    <Compile Include="Boxes\ItemReferenceBox.cs" />
+    <Compile Include="Boxes\LayerSelectorProperty.cs" />
+    <Compile Include="Boxes\MetaBox.cs" />
+    <Compile Include="Boxes\MovieBox.cs" />
+    <Compile Include="Boxes\OperatingPointsInformationProperty.cs" />
+    <Compile Include="Boxes\PixelAspectRatioBox.cs" />
+    <Compile Include="Boxes\PixelInformationProperty.cs" />
+    <Compile Include="Boxes\PrimaryItemBox.cs" />
+    <Compile Include="Boxes\RelativeLocationProperty.cs" />
+    <Compile Include="Boxes\SingleItemTypeReferenceBox.cs" />
+    <Compile Include="Boxes\UserDescriptionBox.cs" />
+
+    <Compile Include="IO\BitStreamReader.cs" />
+
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+</Project>

@@ -1,12 +1,12 @@
-# Openize.Heic
+# FileFormat.HEIC
 
-Openize.Heic is an open source SDK implementing the ISO/IEC 23008-12:2017 HEIF file format decoder.
+FileFormat.HEIC is an open source SDK implementing the ISO/IEC 23008-12:2017 HEIF file format decoder.
 
 It is written from scratch and has a plain C# API to enable a simple integration into other software.
 
 ## Supported features
 
-Openize.Heic has support for:
+FileFormat.HEIC has support for:
 * HEIC coded static images;
   * I slices;
   * 4:2:0, 4:2:2 and 4:4:4 chroma subsampling.
@@ -16,7 +16,7 @@ Openize.Heic has support for:
 * correct color transform according to embedded color profiles;
 * image transformations (crop, mirror, rotate), overlay images.
 
-Openize.Heic doesn't support:
+FileFormat.HEIC doesn't support:
 * HDR images;
 * reading EXIF and XMP metadata;
 * color transform according to EXIF contained color profiles;
@@ -85,7 +85,7 @@ using (var fs = new FileStream("filename.heic", FileMode.Open))
     {
         var width = (int)image.Frames[key].Width;
         var height = (int)image.Frames[key].Height;
-        var pixels = image.Frames[key].GetByteArray(Openize.Heic.Decoder.PixelFormat.Bgra32);
+        var pixels = image.Frames[key].GetByteArray(FileFormat.Heic.Decoder.PixelFormat.Bgra32);
 
         var wbitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Bgra32, null);
         var rect = new Int32Rect(0, 0, width, height);
@@ -102,8 +102,8 @@ using (var fs = new FileStream("filename.heic", FileMode.Open))
 ## Documentation
 
 All public classes, methods and properties are documented in corresponding API_README:
-* [/Openize.Heic.Decoder/docs/API_README.md](/Openize.Heic.Decoder/docs/API_README.md) for Openize.Heic.Decoder;
-* [/Openize.IsoBmff/docs/API_README.md](/Openize.IsoBmff/docs/API_README.md) for Openize.IsoBmff.
+* [/FileFormat.Heic.Decoder/docs/API_README.md](/FileFormat.Heic.Decoder/docs/API_README.md) for FileFormat.Heic.Decoder;
+* [/FileFormat.IsoBmff/docs/API_README.md](/FileFormat.IsoBmff/docs/API_README.md) for FileFormat.IsoBmff.
 
 ### HeicImage
 
@@ -145,13 +145,13 @@ Name | Type | Description
 **BitsPerChannel** | **byte[]** | Bits per channel with color data.
 
 ## License
-Openize.HEIC is available under [Openize License](LICENSE).
+FileFormat.HEIC is available under [Openize License](LICENSE).
 > [!CAUTION]
 > Openize does not and cannot grant You a patent license for the utilization of HEVC/H.265 image compression/decompression technologies.
 
-Openize.HEIC uses Openize.IsoBmff that is distributed under [MIT License](/Openize.IsoBmff/LICENSE).
+FileFormat.HEIC uses FileFormat.IsoBmff that is distributed under [MIT License](/FileFormat.IsoBmff/LICENSE).
 
 ## OSS Notice
-Sample files used for tests and located in the "./Openize.Heic.Tests/TestsData/samples/nokia" folder belong to Nokia Technologies and are used according to [Nokia High-Efficiency Image File Format (HEIF) License](https://github.com/nokiatech/heif/blob/master/LICENSE.TXT)
+Sample files used for tests and located in the "./FileFormat.Heic.Tests/TestsData/samples/nokia" folder belong to Nokia Technologies and are used according to [Nokia High-Efficiency Image File Format (HEIF) License](https://github.com/nokiatech/heif/blob/master/LICENSE.TXT)
 
 > Licensed Field means the non-commercial purposes of evaluation, testing and academic research in each non-commercial case to use, run, modify (in a way that still complies with the Specification) and copy the Software to (a) generate, using one or more encoded pictures as inputs, a file complying with the Specification and including the one or more encoded pictures that were given as inputs; and/or (b) read a file complying with the Specification, resulting into one or more encoded pictures included in the file as outputs.
