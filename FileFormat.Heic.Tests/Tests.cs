@@ -50,7 +50,7 @@ namespace FileFormat.Heic.Tests
             using (var fs = new FileStream(Path.Combine(SamplesPath, filename), FileMode.Open))
             {
                 var image = HeicImage.Load(fs);
-                var pixels = image.DefaultImage.GetByteArray(PixelFormat.Argb32);
+                var pixels = image.GetByteArray(PixelFormat.Argb32);
                 CompareWithEthalon(filename, pixels);
             }
         }
@@ -67,7 +67,7 @@ namespace FileFormat.Heic.Tests
             using (var fs = new FileStream(Path.Combine(SamplesPath, filename), FileMode.Open))
             {
                 var image = HeicImage.Load(fs);
-                var pixels = image.DefaultImage.GetByteArray(PixelFormat.Argb32);
+                var pixels = image.GetByteArray(PixelFormat.Argb32);
                 CompareWithEthalon(filename, pixels);
             }
         }
@@ -103,7 +103,7 @@ namespace FileFormat.Heic.Tests
             using (var fs = new FileStream(Path.Combine(SamplesPath, filename), FileMode.Open))
             {
                 var image = HeicImage.Load(fs);
-                var pixels = image.DefaultImage.GetByteArray(PixelFormat.Argb32);
+                var pixels = image.GetByteArray(PixelFormat.Argb32);
                 CompareWithEthalon(filename, pixels);
             }
         }

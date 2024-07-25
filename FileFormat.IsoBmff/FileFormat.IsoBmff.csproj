@@ -3,53 +3,31 @@
   <PropertyGroup>
     <UseTargetFramework Condition=" '$(UseTargetFramework)' == '' ">net8.0</UseTargetFramework>
 	  <TargetFrameworks>net8.0;net6.0;netstandard2.0</TargetFrameworks>
-    <Configurations>Debug;Release;DebugWithUnitTest;ReleaseWithUnitTest;LinuxDebugWithUnitTest;ReleaseDebug;ReleasePython</Configurations>
+    <Configurations>Debug;DebugWithSign;Release;ReleaseWithSign</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup>
-    <DefineConstants>ASPOSE_IMAGING;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(InternalVisibility)' != ''">
-	<DefineConstants>$(InternalVisibility);$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFrameworkVersion)' == 'v2.0'">
-    <DefineConstants>$(DefineConstants);NETSTANDARD2_0</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFrameworkVersion)' == 'v2.1'">
-    <DefineConstants>$(DefineConstants);NETSTANDARD2_1</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;$(DefineConstants)</DefineConstants>
     <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWithUnitTest|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;UNIT_TEST;$(DefineConstants)</DefineConstants>
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LinuxDebugWithUnitTest|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;UNIT_TEST;$(DefineConstants)</DefineConstants>
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithUnitTest|AnyCPU'">
-    <DefineConstants>UNIT_TEST;$(DefineConstants)</DefineConstants>
-    <DebugType>pdbonly</DebugType>
-    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleasePython|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWithSign|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;$(DefineConstants)</DefineConstants>
+    <DebugType>full</DebugType>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\publish\KeyPair.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithSign|AnyCPU'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
-	<DefineConstants>PYTHON;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|AnyCPU'">
-	<DefineConstants>RELEASE_DEBUG;$(DefineConstants)</DefineConstants>
-	<DebugType>pdbonly</DebugType>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\publish\KeyPair.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <EnableDefaultCompileItems>False</EnableDefaultCompileItems>

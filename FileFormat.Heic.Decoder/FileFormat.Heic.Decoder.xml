@@ -337,9 +337,9 @@
             Meta data IsoBmff box.
             </summary>
         </member>
-        <member name="P:FileFormat.Heic.Decoder.HeicHeader.DefaultImageId">
+        <member name="P:FileFormat.Heic.Decoder.HeicHeader.DefaultFrameId">
             <summary>
-            The identificator of the default image.
+            The identificator of the default frame.
             </summary>
         </member>
         <member name="M:FileFormat.Heic.Decoder.HeicHeader.#ctor(FileFormat.IsoBmff.MetaBox)">
@@ -427,7 +427,7 @@
             Dictionary of all Heic image frames with access by identifier.
             </summary>
         </member>
-        <member name="P:FileFormat.Heic.Decoder.HeicImage.DefaultImage">
+        <member name="P:FileFormat.Heic.Decoder.HeicImage.DefaultFrame">
             <summary>
             Returns the default image frame, which is specified in meta data.
             </summary>
@@ -458,6 +458,24 @@
             <param name="stream">File stream.</param>
             <returns>True if file header contains heic signarure, false otherwise.</returns>
         </member>
+        <member name="M:FileFormat.Heic.Decoder.HeicImage.GetByteArray(FileFormat.Heic.Decoder.PixelFormat,System.Drawing.Rectangle)">
+            <summary>
+            Get pixel data of the default image frame in the format of byte array.
+            <para>Each three or four bytes (the count depends on the pixel format) refer to one pixel left to right top to bottom line by line.</para>
+            </summary>
+            <param name="pixelFormat">Pixel format that defines the order of colors and the presence of alpha byte.</param>
+            <param name="boundsRectangle">Bounds of the requested area.</param>
+            <returns>Byte array, null if frame does not contain image data.</returns>
+        </member>
+        <member name="M:FileFormat.Heic.Decoder.HeicImage.GetInt32Array(FileFormat.Heic.Decoder.PixelFormat,System.Drawing.Rectangle)">
+            <summary>
+            Get pixel data of the default image frame in the format of integer array. 
+            <para>Each int value refers to one pixel left to right top to bottom line by line.</para>
+            </summary>
+            <param name="pixelFormat">Pixel format that defines the order of colors.</param>
+            <param name="boundsRectangle">Bounds of the requested area.</param>
+            <returns>Integer array, null if frame does not contain image data.</returns>
+        </member>
         <member name="M:FileFormat.Heic.Decoder.HeicImage.ReadFramesMeta(FileFormat.Heic.Decoder.IO.BitStreamWithNalSupport)">
             <summary>
             Fill frames dictionary with read meta data.
@@ -477,6 +495,31 @@
         <member name="P:FileFormat.Heic.Decoder.seq_parameter_set_rbsp.SubHeightC">
             <summary>
             2 if 420, otherwise 1
+            </summary>
+        </member>
+        <member name="T:FileFormat.Heic.Decoder.PixelFormat">
+            <summary>
+            Specifies the format of the color data for each pixel in the image.
+            </summary>
+        </member>
+        <member name="F:FileFormat.Heic.Decoder.PixelFormat.Rgb24">
+            <summary>
+            Specifies that the format is 24 bits per pixel; 8 bits each are used for the red, green, and blue components.
+            </summary>
+        </member>
+        <member name="F:FileFormat.Heic.Decoder.PixelFormat.Rgba32">
+            <summary>
+            Specifies that the format is 32 bits per pixel; 8 bits each are used for the red, green, blue, and alpha components.
+            </summary>
+        </member>
+        <member name="F:FileFormat.Heic.Decoder.PixelFormat.Argb32">
+            <summary>
+            Specifies that the format is 32 bits per pixel; 8 bits each are used for the alpha, red, green, and blue components.
+            </summary>
+        </member>
+        <member name="F:FileFormat.Heic.Decoder.PixelFormat.Bgra32">
+            <summary>
+            Specifies that the format is 32 bits per pixel; 8 bits each are used for the blue, green, red, and alpha components.
             </summary>
         </member>
         <member name="T:FileFormat.Heic.Decoder.MathExtra">

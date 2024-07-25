@@ -26,9 +26,9 @@ namespace FileFormat.Heic.Decoder
         public MetaBox Meta {  get; private set; }
 
         /// <summary>
-        /// The identificator of the default image.
+        /// The identificator of the default frame.
         /// </summary>
-        public uint DefaultImageId => Meta.pitm?.item_ID ?? 0;
+        public uint DefaultFrameId => Meta.pitm?.item_ID ?? 0;
 
         /// <summary>
         /// Initializes a new instance of the heic image header.
