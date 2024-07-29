@@ -15,6 +15,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 
 namespace FileFormat.Heic.Decoder
 {
@@ -72,17 +73,17 @@ namespace FileFormat.Heic.Decoder
         /// <summary>
         /// Returns the default image frame, which is specified in meta data.
         /// </summary>
-        public HeicImageFrame DefaultImage => _frames[Header.DefaultImageId];
+        public HeicImageFrame DefaultFrame => _frames[Header.DefaultFrameId];
 
         /// <summary>
         /// Width of the default image frame in pixels.
         /// </summary>
-        public uint Width => DefaultImage.Width;
+        public uint Width => DefaultFrame.Width;
 
         /// <summary>
         /// Height of the default image frame in pixels.
         /// </summary>
-        public uint Height => DefaultImage.Height;
+        public uint Height => DefaultFrame.Height;
 
         #endregion
 
@@ -138,6 +139,24 @@ namespace FileFormat.Heic.Decoder
 
             return true;
         }
+
+        /// <summary>
+        /// Get pixel data of the default image frame in the format of byte array.
+        /// <para>Each three or four bytes (the count depends on the pixel format) refer to one pixel left to right top to bottom line by line.</para>
+        /// </summary>
+        /// <param name="pixelFormat">Pixel format that defines the order of colors and the presence of alpha byte.</param>
+        /// <param name="boundsRectangle">Bounds of the requested area.</param>
+        /// <returns>Byte array, null if frame does not contain image data.</returns>
+        public byte[] GetByteArray(PixelFormat pixelFormat, Rectangle boundsRectangle = default) => DefaultFrame.GetByteArray(pixelFormat, boundsRectangle);
+
+        /// <summary>
+        /// Get pixel data of the default image frame in the format of integer array. 
+        /// <para>Each int value refers to one pixel left to right top to bottom line by line.</para>
+        /// </summary>
+        /// <param name="pixelFormat">Pixel format that defines the order of colors.</param>
+        /// <param name="boundsRectangle">Bounds of the requested area.</param>
+        /// <returns>Integer array, null if frame does not contain image data.</returns>
+        public int[] GetInt32Array(PixelFormat pixelFormat, Rectangle boundsRectangle = default) => DefaultFrame.GetInt32Array(pixelFormat, boundsRectangle);
 
         #endregion
 

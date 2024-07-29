@@ -33,7 +33,28 @@ using (var fs = new FileStream("filename.heic", FileMode.Open))
 }
 ```
 
-### Convert .heic file to .png
+### Convert .heic file to .jpg using System.Windows.Media.Imaging.WriteableBitmap
+```C#
+using (var fs = new FileStream("filename.heic", FileMode.Open))
+{
+    HeicImage image = HeicImage.Load(fs);
+     
+    var pixels = image.GetByteArray(Heic.Decoder.PixelFormat.Bgra32);
+    var width = (int)image.Width;
+    var height = (int)image.Height;
+     
+    var wbitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Bgra32, null);
+    var rect = new Int32Rect(0, 0, width, height);
+    wbitmap.WritePixels(rect, pixels, 4 * width, 0);
+    
+    using FileStream saveStream = new FileStream("output.jpg", FileMode.OpenOrCreate);
+    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+    encoder.Frames.Add(BitmapFrame.Create(wbitmap));
+    encoder.Save(saveStream);
+}
+```
+
+### Convert .heic file to .png using System.Windows.Media.Imaging.WriteableBitmap
 ```C#
 using (var fs = new FileStream("filename.heic", FileMode.Open))
 {
@@ -54,24 +75,23 @@ using (var fs = new FileStream("filename.heic", FileMode.Open))
 }
 ```
 
-### Convert .heic file to .jpg
+### Convert .heic file to .png using System.Drawing.Common.Bitmap
 ```C#
 using (var fs = new FileStream("filename.heic", FileMode.Open))
 {
     HeicImage image = HeicImage.Load(fs);
-     
-    var pixels = image.GetByteArray(Heic.Decoder.PixelFormat.Bgra32);
+
+    var pixels = image.GetInt32Array(Heic.Decoder.PixelFormat.Argb32);
     var width = (int)image.Width;
     var height = (int)image.Height;
-     
-    var wbitmap = new WriteableBitmap(width, height, 72, 72, PixelFormats.Bgra32, null);
-    var rect = new Int32Rect(0, 0, width, height);
-    wbitmap.WritePixels(rect, pixels, 4 * width, 0);
-    
-    using FileStream saveStream = new FileStream("output.jpg", FileMode.OpenOrCreate);
-    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-    encoder.Frames.Add(BitmapFrame.Create(wbitmap));
-    encoder.Save(saveStream);
+    var i = 0;
+
+    Bitmap myBitmap = new Bitmap(width, height);
+    for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
+            myBitmap.SetPixel(x, y, Color.FromArgb(pixels[i++]));
+
+    myBitmap.Save("output.png");
 }
 ```
 
@@ -112,21 +132,23 @@ Name | Type | Description | Parameters | Notes
 ------------ | ------------- | ------------- | ------------- | -------------
 **Load** | **HeicImage** | Reads the file meta data and creates a class object for further decoding of the file contents. | `Stream stream` - File stream. | This operation does not decode pixels.<br />Use the default frame methods GetByteArray or GetInt32Array afterwards in order to decode pixels.
 **CanLoad** | **bool** | Checks if the stream can be read as a heic image.<br />Returns true if file header contains heic signarure, false otherwise | `Stream stream` - File stream. | 
+**GetByteArray** | **byte[]** | Get pixel data of the default image frame in the format of byte array.<br />Each three or four bytes (the count depends on the pixel format) refer to one pixel left to right top to bottom line by line.<br />Returns null if frame does not contain image data. | `PixelFormat pixelFormat` - Pixel format that defines the order of colors and the presence of alpha byte.<br />`Rectangle boundsRectangle` - Bounds of the requested area.
+**GetInt32Array** | **int[]** | Get pixel data of the default image frame in the format of integer array.<br />Each int value refers to one pixel left to right top to bottom line by line.<br />Returns null if frame does not contain image data. | `PixelFormat pixelFormat` - Pixel format that defines the order of colors.<br />`Rectangle boundsRectangle` - Bounds of the requested area.
 
 #### Properties
 Name | Type | Description
 ------------ | ------------- | ------------- 
 **Frames** | **Dictionary<uint, HeicImageFrame>** | Dictionary of public Heic image frames with access by identifier. 
 **AllFrames** | **Dictionary<uint, HeicImageFrame>** | Dictionary of all Heic image frames with access by identifier. 
-**DefaultImage** | **HeicImageFrame** | Returns the default image frame, which is specified in meta data. 
+**DefaultFrame** | **HeicImageFrame** | Returns the default image frame, which is specified in meta data. 
 
 ### HeicImageFrame
 
 #### Methods
 Name | Type | Description | Parameters
 ------------ | ------------- | ------------- | -------------
-**GetByteArray** | **byte[]** | Get pixel data in the format of byte array.<br />Each three or four bytes (the count depends on the pixel format) refer to one pixel left to right top to bottom line by line. | `PixelFormat pixelFormat` - Pixel format that defines the order of colors and the presence of alpha byte.<br />`Rectangle boundsRectangle` - Bounds of the requested area.
-**GetInt32Array** | **int[]** | Get pixel data in the format of integer array.<br />Each int value refers to one pixel left to right top to bottom line by line. | `PixelFormat pixelFormat` - Pixel format that defines the order of colors.<br />`Rectangle boundsRectangle` - Bounds of the requested area.
+**GetByteArray** | **byte[]** | Get pixel data in the format of byte array.<br />Each three or four bytes (the count depends on the pixel format) refer to one pixel left to right top to bottom line by line.<br />Returns null if frame does not contain image data. | `PixelFormat pixelFormat` - Pixel format that defines the order of colors and the presence of alpha byte.<br />`Rectangle boundsRectangle` - Bounds of the requested area.
+**GetInt32Array** | **int[]** | Get pixel data in the format of integer array.<br />Each int value refers to one pixel left to right top to bottom line by line.<br />Returns null if frame does not contain image data. | `PixelFormat pixelFormat` - Pixel format that defines the order of colors.<br />`Rectangle boundsRectangle` - Bounds of the requested area.
 **GetTextData** | **string** | Get frame text data.<br />Exists only for mime frame types. | 
 
 ### Properties
