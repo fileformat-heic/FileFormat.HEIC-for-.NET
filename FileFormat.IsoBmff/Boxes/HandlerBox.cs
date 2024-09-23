@@ -40,6 +40,7 @@ namespace FileFormat.IsoBmff
         /// <param name="stream">File stream.</param>
         public HandlerBox(BitStreamReader stream) : base (stream, BoxType.hdlr)
         {
+            var pos = stream.GetBitPosition();        
             stream.Read(32);
 
             handler_type = (uint)stream.Read(32);
@@ -48,6 +49,8 @@ namespace FileFormat.IsoBmff
                 stream.Read(32);
 
             name = stream.ReadString();
+            while (size - 12 > (stream.GetBitPosition() - pos) / 8)
+                stream.Read(8);
         }
     }
 }
