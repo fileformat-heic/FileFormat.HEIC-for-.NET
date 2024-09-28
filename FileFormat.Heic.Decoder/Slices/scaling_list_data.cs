@@ -23,8 +23,6 @@ namespace FileFormat.Heic.Decoder
 
         public scaling_list_data(BitStreamWithNalSupport stream)
         {
-            throw new NotImplementedException("Scaling list config is not met in static image cases.");
-
             scaling_list_pred_mode_flag = new bool[4, 6];
             scaling_list_pred_matrix_id_delta = new uint[4, 6];
             scaling_list_dc_coef_minus8 = new int[2][];

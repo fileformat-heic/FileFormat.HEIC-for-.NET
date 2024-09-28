@@ -109,6 +109,38 @@ namespace FileFormat.Heic.Tests
         }
 
         /// <summary>
+        /// Test decoding of image with bigger HandlerBox.
+        /// Image is captured with Samsung A71.
+        /// </summary>
+        [Test]
+        [TestCase("samsung_a71.heic")]
+        public void TestBiggerHandlerBox(string filename)
+        {
+            using (var fs = new FileStream(Path.Combine(SamplesPath, filename), FileMode.Open))
+            {
+                var image = HeicImage.Load(fs);
+                var pixels = image.GetByteArray(PixelFormat.Argb32);
+                CompareWithEthalon(filename, pixels);
+            }
+        }
+
+        /// <summary>
+        /// Test decoding of image with scaling list.
+        /// Image is captured with iPhone 12 Pro.
+        /// </summary>
+        [Test]
+        [TestCase("iphone_telephoto_with_scaling_list.heic")]
+        public void TestScalingList(string filename)
+        {
+            using (var fs = new FileStream(Path.Combine(SamplesPath, filename), FileMode.Open))
+            {
+                var image = HeicImage.Load(fs);
+                var pixels = image.GetByteArray(PixelFormat.Argb32);
+                CompareWithEthalon(filename, pixels);
+            }
+        }
+
+        /// <summary>
         /// Create ethalon file.
         /// </summary>
         /// <param name="filename">File name.</param>
