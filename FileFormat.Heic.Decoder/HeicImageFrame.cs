@@ -373,7 +373,7 @@ namespace FileFormat.Heic.Decoder
                             oldCol = newRow;
                             break;
                         case 2:
-                            oldCol = Height - newCol - 1;
+                            oldCol = Width - newCol - 1;
                             break;
                         case 1:
                             oldCol = Height - newRow - 1;
@@ -390,7 +390,7 @@ namespace FileFormat.Heic.Decoder
                             oldRow = Width - newCol - 1;
                             break;
                         case 2:
-                            oldRow = Width - newRow - 1;
+                            oldRow = Height - newRow - 1;
                             break;
                         case 1:
                             oldRow = newCol;
